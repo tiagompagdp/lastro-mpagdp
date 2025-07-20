@@ -1,2 +1,2 @@
-# mpagdpFrontend
+# Lastro - MPAGDP AI search engine
 
