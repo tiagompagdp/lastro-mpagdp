@@ -145,7 +145,7 @@ const Landing = () => {
       </div>
 
       {/* SECTION 1 — VIDEO */}
-      <div className="relative h-screen w-full overflow-hidden bg-black">
+      <div className="relative h-[100dvh] w-full overflow-hidden bg-black">
         {/* Vimeo Background */}
         <div
           className={`absolute inset-0 transition-opacity duration-[2000ms] ease-in-out ${
@@ -221,9 +221,9 @@ const Landing = () => {
       </div>
 
       {/* SECTION 2 — Footer Section */}
-      <div className="min-h-screen bg-black text-white px-8 py-10 flex flex-col justify-center max-w-[1920px] mx-auto">
+      <div className="min-h-[100dvh] bg-black text-white px-8 py-10 flex flex-col justify-center max-w-[1920px] mx-auto">
         <div className="text-left max-w-3xl mx-auto">
-          <h2 className="text-base sm:text-lg md:text-3xl font-dela mb-2 sm:mb-4 md:mb-8">
+          <h2 className="text-base sm:text-lg md:text-3xl font-dela mb-4 md:mb-8">
             Uma nova forma de explorar o património cultural português
           </h2>
           <p className="text-xs sm:text-base md:text-lg leading-normal font-dm_light">
