@@ -148,7 +148,7 @@ const Landing = () => {
       <div className="relative h-[100dvh] w-full overflow-hidden bg-black">
         {/* Vimeo Background */}
         <div
-          className={`absolute inset-0 transition-opacity duration-[2000ms] ease-in-out ${
+          className={`absolute inset-0 transition-opacity duration-[1000ms] ease-in-out ${
             videoStarted ? "opacity-50" : "opacity-0"
           }`}
           style={{ zIndex: 0 }}
@@ -223,8 +223,8 @@ const Landing = () => {
       {/* SECTION 2 — Footer Section */}
       <div className="min-h-screen bg-black text-white px-8 py-10 flex flex-col justify-center max-w-[1920px] mx-auto">
         <div className="text-left max-w-3xl mx-auto">
-          <h2 className="text-base sm:text-lg md:text-3xl font-dela mb-4 md:mb-8">
-            Uma nova forma de explorar o património cultural português
+          <h2 className="text-base sm:text-lg md:text-2xl leading-tight font-dela mb-4 md:mb-8">
+            Uma nova forma de explorar música, tradição oral, memória coletiva e património humano
           </h2>
           <p className="text-xs sm:text-base md:text-lg leading-normal font-dm_light">
             A plataforma em desenvolvimento permite uma exploração
@@ -237,7 +237,7 @@ const Landing = () => {
             descobrir.
           </p>
 
-          <p className="pt-8 text-xs sm:text-base md:text-2xl leading-normal font-dela">
+          <p className="pt-8 text-xs sm:text-base md:text-xl leading-normal font-dela">
             Entretanto
           </p>
 

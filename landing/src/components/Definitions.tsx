@@ -42,7 +42,7 @@ const Definitions = () => {
       }}
       aria-label="Abrir definição no Priberam"
     >
-      <p>(las·tro) · nome masculino</p>
+      <p>(las·tro)</p>
       <p
         className={`mt-0.5 transition-opacity duration-700 ${
           fade ? "opacity-100" : "opacity-0"
