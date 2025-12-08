@@ -1,1 +1,78 @@
 @import "tailwindcss";
+
+@theme {
+  --color-hl-color: #3b82f6;
+  --color-bg-color: #8b5cf6;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Thin.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GeistMono";
+  src: url("/fonts/GeistMono-Thin.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GeistMono";
+  src: url("/fonts/GeistMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GeistMono";
+  src: url("/fonts/GeistMono-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@utility font-thin {
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 100;
+}
+
+@utility font-regular {
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+}
+
+@utility font-bold {
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+}
+
+@utility font-mono-thin {
+  font-family: "GeistMono", ui-monospace, monospace;
+  font-weight: 100;
+}
+
+@utility font-mono-regular {
+  font-family: "GeistMono", ui-monospace, monospace;
+  font-weight: 400;
+}
+
+@utility font-mono-bold {
+  font-family: "GeistMono", ui-monospace, monospace;
+  font-weight: 700;
+}

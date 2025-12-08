@@ -3,31 +3,9 @@
 -> define all the models of the app db
 '''
 
-from sqlalchemy.types import TypeDecorator, JSON
-from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy import Date
 from datetime import datetime
 from database.setup import db
-
-# -----------------------------
-# Custom mutable list of strings
-# -----------------------------
-
-class StringList(TypeDecorator):
-    impl = JSON
-
-    def process_bind_param(self, value, d):
-        if value is None:
-            return []
-        if not isinstance(value, list):
-            raise ValueError("Value must be a list of strings")
-        return value
-
-    def process_result_value(self, value, d):
-        return value or []
-
-# associate MutableList with StringList for change tracking
-MutableList.associate_with(StringList)
 
 # -----------------------------
 # Project model
@@ -38,29 +16,29 @@ class Project(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    link = db.Column(db.String(200), unique=True, nullable=False)
-    title = db.Column(db.String(120))
-    author = db.Column(db.String(120))
-    category = db.Column(StringList, default=list)
+    link = db.Column(db.String(128), unique=True, nullable=False)
+    title = db.Column(db.String(128))
+    author = db.Column(db.String(128))
+    category = db.Column(db.String(256))
     date = db.Column(Date)
 
     # technical info
-    direction = db.Column(StringList, default=list)
-    sound = db.Column(StringList, default=list)
-    production = db.Column(StringList, default=list)
-    support = db.Column(StringList, default=list)
-    assistance = db.Column(StringList, default=list)
-    research = db.Column(StringList, default=list)
+    direction = db.Column(db.String(256))
+    sound = db.Column(db.String(256))
+    production = db.Column(db.String(256))
+    support = db.Column(db.String(256))
+    assistance = db.Column(db.String(256))
+    research = db.Column(db.String(256))
 
     # geo info
-    location = db.Column(db.String(500))
+    location = db.Column(db.String(512))
 
     # instruments
-    instruments = db.Column(StringList, default=list)
+    instruments = db.Column(db.String(256))
 
     # other info
-    keywords = db.Column(StringList, default=list)
-    infoPool = db.Column(db.String(3000))
+    keywords = db.Column(db.String(1024))
+    infoPool = db.Column(db.String(2048))
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -92,3 +70,31 @@ class Project(db.Model):
 
     def __repr__(self):
         return f'<Project {self.id}>'
+    
+# -----------------------------
+# Interaction model
+# -----------------------------
+
+class Interaction(db.Model):
+    __tablename__ = 'userActivity'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    userInput = db.Column(db.String(512))
+    userPublicIP = db.Column(db.String(32))
+    modelOutput = db.Column(db.String(512))
+    score = db.Column(db.Integer, default=0) # 0 not rated, -1 bad, 1 good
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+
+            "userInput": self.userInput,
+            "userPublicIP": self.userPublicIP,
+            "modelOutput": self.modelOutput,
+            "score": self.score,
+
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }

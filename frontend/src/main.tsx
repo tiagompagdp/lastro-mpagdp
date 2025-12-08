@@ -5,13 +5,17 @@ import "./index.css";
 
 import Home from "./pages/Home";
 import About from "./pages/About";
+import Explore from "./pages/Explore";
+import Project from "./pages/Project";
 
 createRoot(document.getElementById("root")!).render(
   //<StrictMode>
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
+      <Route path="/sobre" element={<About />} />
+      <Route path="/explorar" element={<Explore />} />
+      <Route path="/projetos/:id" element={<Project />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </BrowserRouter>

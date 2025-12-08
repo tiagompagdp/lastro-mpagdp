@@ -1,28 +1,23 @@
 import { useEffect, useState } from "react";
-
-import { getProjects, getProject } from "../requests/project";
-import { getVimeoThumb } from "../hooks/getVimeoThumb";
+import { getRandomProjects } from "../requests/requests";
+import ProjectCard from "../components/ProjectCard";
 
 const Home = () => {
   const [projects, setProjects] = useState<Projects>([]);
-  const [project, setProject] = useState<Project>();
+  const nProjects = 1;
 
   useEffect(() => {
-    getProjects().then((res) => setProjects(res as Projects));
+    getRandomProjects(nProjects).then((res) => setProjects(res as Projects));
   }, []);
 
-  useEffect(() => {
-    if (projects.length > 0) {
-      getProject(projects[1].id).then((res) => setProject(res as Project));
-    }
-  }, [projects]);
-
   return (
-    <div>
-      <h1>Projects</h1>
-      <p>{projects[1]?.title}</p>
-      <p>Selected Project: {project?.title}</p>
-      {project && <img src={getVimeoThumb(project.id)} alt={project.title} />}
+    <div className="container mx-auto p-4">
+      {projects.map((project) => (
+        <ProjectCard key={project.id} project={project} />
+      ))}
+      <h1 className="text-5xl text-hl-color font-mono-bold uppercase">
+        Lastro
+      </h1>
     </div>
   );
 };
