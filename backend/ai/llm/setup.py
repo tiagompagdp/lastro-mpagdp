@@ -25,7 +25,7 @@ def queryLLM(currentPrompt, previousPrompts):
     previousSection = "\n".join(previousPrompts) if previousPrompts else "None"
     formattedPrompt = f"PREVIOUS: {previousSection}\n\nCURRENT: {currentPrompt}"
 
-    print(formattedPrompt)
+    #print(formattedPrompt)
 
     try:
         response = requests.post(

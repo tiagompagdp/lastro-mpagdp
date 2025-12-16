@@ -1,9 +1,63 @@
 @import "tailwindcss";
 
+/* colors */
+
 @theme {
-  --color-hl-color: #3b82f6;
-  --color-bg-color: #8b5cf6;
+  --color-color-1: #e0e0e0;
+  --color-color-2: #9a9a9a;
+  --color-color-bg: #080808;
 }
+
+body {
+  background-color: var(--color-color-bg);
+  color: var(--color-color-1);
+}
+
+/* grid utilities */
+
+:root {
+  --grid-x-padding-desktop: 3.75rem;
+  --grid-x-padding-mobile: 1.25rem;
+  --grid-y-padding-desktop: 5.25rem;
+  --grid-y-padding-mobile: 5.25rem;
+  --menu-height: 4rem;
+}
+
+.menu-footer-setup {
+  height: var(--menu-height);
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-left: var(--grid-x-padding-mobile);
+  padding-right: var(--grid-x-padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .menu-footer-setup {
+    padding-left: var(--grid-x-padding-desktop);
+    padding-right: var(--grid-x-padding-desktop);
+  }
+}
+
+.grid-setup {
+  padding-left: var(--grid-x-padding-mobile);
+  padding-right: var(--grid-x-padding-mobile);
+  padding-top: var(--grid-y-padding-mobile);
+  padding-bottom: var(--grid-y-padding-mobile);
+
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .grid-setup {
+    padding-left: var(--grid-x-padding-desktop);
+    padding-right: var(--grid-x-padding-desktop);
+    padding-top: var(--grid-y-padding-desktop);
+    padding-bottom: var(--grid-y-padding-desktop);
+  }
+}
+
+/* typography */
 
 @font-face {
   font-family: "Geist";
@@ -49,7 +103,7 @@
 
 @utility font-thin {
   font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
-  font-weight: 100;
+  font-weight: 200;
 }
 
 @utility font-regular {
@@ -64,7 +118,7 @@
 
 @utility font-mono-thin {
   font-family: "GeistMono", ui-monospace, monospace;
-  font-weight: 100;
+  font-weight: 200;
 }
 
 @utility font-mono-regular {
@@ -75,4 +129,100 @@
 @utility font-mono-bold {
   font-family: "GeistMono", ui-monospace, monospace;
   font-weight: 700;
+}
+
+@utility text-hero {
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 3rem; /* 48px */
+  /line-height: 1.1;
+}
+
+@utility text-title-1 {
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 2rem; /* 32px */
+  line-height: 1.1;
+}
+
+@utility text-title-2 {
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem; /* 24px */
+  line-height: 1.1;
+}
+
+@utility text-body-1 {
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 1rem; /* 16px */
+  line-height: 1.2;
+}
+
+@utility text-body-2 {
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1.2;
+}
+
+@utility text-note-1 {
+  font-family: "GeistMono", ui-monospace, monospace;
+  font-weight: 400;
+  font-size: 1rem; /* 16px */
+  line-height: 1.1;
+}
+
+@utility text-note-2 {
+  font-family: "GeistMono", ui-monospace, monospace;
+  font-weight: 400;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1.1;
+}
+
+@utility text-note-3 {
+  font-family: "GeistMono", ui-monospace, monospace;
+  font-weight: 400;
+  font-size: 0.625rem; /* 10px */
+  line-height: 1.1;
+}
+
+/* page transitions */
+
+.page-transition {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
+}
+
+.page-transition.fadeOut {
+  animation-name: fadeOut;
+}
+
+.page-transition.fadeIn {
+  animation-name: fadeIn;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Cookies from "js-cookie";
 
 const COOKIE_NAME = "lastro-userDataConsent";
@@ -24,31 +25,35 @@ const CookiePopup: React.FC<CookiePopupProps> = ({ onAccept }) => {
 
   if (!visible) return null;
 
-  return (
-    <div
-      className={`
-        fixed bottom-5 left-5 right-5
-        bg-gray-800 text-white p-4 px-6 rounded-lg
-        flex justify-between items-center gap-4
+  return createPortal(
+    <>
+      <div className="fixed inset-0 bg-black/40 z-50"></div>
 
-      `}
-    >
-      <p className="text-sm m-0">We use cookies to improve your experience.</p>
-      <div className="flex gap-2">
-        <button
-          onClick={handleReject}
-          className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition-colors"
-        >
-          Reject
-        </button>
-        <button
-          onClick={handleAccept}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition-colors"
-        >
-          Accept
-        </button>
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-color-bg border border-color-1/50 rounded-xl p-8 max-w-md w-[calc(100%-2rem)] shadow-2xl">
+        <h2 className="text-title-2 font-bold text-color-1 mb-4">
+          Consentimento de Cookies
+        </h2>
+        <p className="text-body-1 text-color-2 mb-6">
+          Ao aceitar, consente a recolha de dados de utilização, com o objetivo
+          de melhorar a qualidade dos resultados de pesquisa.
+        </p>
+        <div className="flex gap-3 justify-end text-body-1">
+          <button
+            onClick={handleReject}
+            className="px-4 py-2 rounded-lg border border-color-2/40 text-color-2 hover:text-color-1 hover:border-color-1 transition-all duration-250 cursor-pointer"
+          >
+            Rejeitar
+          </button>
+          <button
+            onClick={handleAccept}
+            className="px-4 py-2 rounded-lg bg-color-1 text-color-bg font-bold hover:opacity-80 transition-opacity duration-250 cursor-pointer"
+          >
+            Aceitar
+          </button>
+        </div>
       </div>
-    </div>
+    </>,
+    document.body
   );
 };
 

@@ -81,7 +81,7 @@ def recordInteraction(data,result):
         from database.models import Interaction
 
         newInteraction = Interaction(
-            userInput=data["prompt"],
+            userInput=data["currentPrompt"],
             userPublicIP=data["userIp"],
             modelOutput=result)
 

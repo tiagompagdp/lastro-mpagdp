@@ -1,9 +1,5 @@
 const About = () => {
-  return (
-    <div>
-      <h1>about</h1>
-    </div>
-  );
+  return <div className="grid-setup">Sobre</div>;
 };
 
 export default About;

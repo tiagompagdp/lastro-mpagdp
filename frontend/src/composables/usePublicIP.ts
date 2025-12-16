@@ -11,11 +11,13 @@ export function usePublicIP(cookie: boolean) {
         const data = await response.json();
         setIp(data.ip);
       } catch (err: any) {
-        console.log(err.message);
+        //console.log(err.message);
+        setIp("anonymous");
       }
     };
 
     if (cookie) fetchIP();
+    else setIp("anonymous");
   }, [cookie]);
 
   return ip;

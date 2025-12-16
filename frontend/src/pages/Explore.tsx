@@ -1,103 +1,182 @@
-import { useState, useEffect } from "react";
-import Cookies from "js-cookie";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import gsap from "gsap";
 
 import CookiePopup from "../components/CookiePopup";
-import { usePublicIP } from "../composables/usePublicIP";
-import { sendQuery } from "../requests/requests";
+import ProjectBlock from "../components/ProjectBlock";
+import SearchLoading from "../components/SearchLoading";
+import { useChat } from "../composables/useChat";
 
 const Explore: React.FC = () => {
-  const [cookieAccepted, setCookieAccepted] = useState(false);
+  const { messages, isLoading } = useChat();
+  const [headerHeights, setHeaderHeights] = useState<Record<number, number>>(
+    {}
+  );
+  const headerRefs = useRef<Record<number, HTMLDivElement | null>>({});
+  const searchResultRefs = useRef<Record<number, HTMLDivElement | null>>({});
+  const projectBlockRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const loadingRef = useRef<HTMLDivElement | null>(null);
+  const animatedIndices = useRef<Set<number>>(new Set());
 
   useEffect(() => {
-    setCookieAccepted(Cookies.get("lastro-userDataConsent") === "true");
-  }, []);
-
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const ip = usePublicIP(cookieAccepted);
-
-  const historySize = 2;
-
-  // ==================================================
-  // send queries
-  // ==================================================
-
-  const handleSend = async () => {
-    if (!input.trim() || !ip) return;
-
-    const prompt = input.trim();
-    setLoading(true);
-
-    try {
-      const response = await sendQuery({
-        cookieConsent: cookieAccepted,
-        userIp: ip,
-        previousPrompts: messages.slice(-historySize).map((msg) => msg.prompt),
-        currentPrompt: prompt,
+    const observer = new ResizeObserver((entries) => {
+      entries.forEach((entry) => {
+        const idx = parseInt(entry.target.getAttribute("data-idx") || "0");
+        setHeaderHeights((prev) => ({
+          ...prev,
+          [idx]: entry.target.clientHeight,
+        }));
       });
+    });
 
-      setMessages((prev) => [...prev, { prompt, response: response.queries }]);
-    } catch (err) {
-      console.error(err);
-      setMessages((prev) => [
-        ...prev,
-        { prompt, response: "Error sending query" },
-      ]);
-    } finally {
-      setLoading(false);
-      setInput("");
+    Object.values(headerRefs.current).forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, [messages.length]);
+
+  useEffect(() => {
+    if (isLoading && loadingRef.current) {
+      setTimeout(() => {
+        loadingRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 300);
     }
-  };
+  }, [isLoading]);
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") handleSend();
-  };
+  useLayoutEffect(() => {
+    if (messages.length === 0) return;
+    const latestIdx = messages.length - 1;
+    if (animatedIndices.current.has(latestIdx)) return;
+    const searchResultEl = searchResultRefs.current[latestIdx];
+    if (!searchResultEl) return;
+    animatedIndices.current.add(latestIdx);
 
-  // ==================================================
-  // html
-  // ==================================================
+    const header = searchResultEl.querySelector("[data-search-header]");
+    const blocks = searchResultEl.querySelectorAll("[data-project-block]");
+
+    if (header instanceof HTMLElement)
+      gsap.set(header, { opacity: 0, xPercent: 20 });
+
+    if (blocks.length > 0) gsap.set(blocks, { opacity: 0, xPercent: 20 });
+
+    const animationFrame = requestAnimationFrame(() => {
+      if (header) {
+        gsap.to(header, {
+          opacity: 1,
+          xPercent: 0,
+          duration: 1.2,
+          ease: "expo.out",
+        });
+      }
+
+      if (blocks.length > 0) {
+        gsap.to(blocks, {
+          opacity: 1,
+          xPercent: 0,
+          duration: 1.2,
+          stagger: 0.25,
+          ease: "expo.out",
+          delay: 0.2,
+        });
+      }
+    });
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+    };
+  }, [messages.length]);
 
   return (
-    <div className="flex flex-col h-screen p-4">
-      <h1 className="text-2xl font-bold mb-4">Explore</h1>
-      <p>Cookie Accepted: {cookieAccepted ? "Yes" : "No"}</p>
-      <p>Your public IP: {ip ?? "Loading..."}</p>
+    <div className="grid-setup !pt-[var(--menu-height)]">
+      <CookiePopup />
 
-      <CookiePopup onAccept={() => setCookieAccepted(true)} />
-
-      {/* Messages list */}
-      <div className="flex-1 overflow-y-auto my-4 space-y-2 border p-2 rounded bg-gray-50">
-        {messages.length === 0 && (
-          <p className="text-gray-400">No messages yet.</p>
-        )}
-        {messages.map((msg, idx) => (
-          <div key={idx} className="p-2 rounded border bg-white">
-            <p className="font-semibold">{msg.prompt}</p>
-            <p className="font-semibold opacity-50">{msg.response}</p>
-          </div>
-        ))}
+      <div
+        className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center transition-opacity duration-250 ease-out pointer-events-none z-0 ${
+          messages.length > 0 || isLoading ? "opacity-0" : "opacity-100"
+        }`}
+      >
+        <p className="text-body-1 text-color-1 opacity-50">
+          Escreva na barra de pesquisa para começar.
+        </p>
       </div>
 
-      {/* Input */}
-      <div className="flex space-x-2">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Type your prompt..."
-          className="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
-          disabled={!ip || loading}
-        />
-        <button
-          onClick={handleSend}
-          disabled={!ip || loading || !input.trim()}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md"
-        >
-          {loading ? "Sending..." : "Send"}
-        </button>
+      <div>
+        {messages.map((msg, idx) => {
+          if (msg.results && msg.results.length > 0) {
+            return (
+              <div
+                key={idx}
+                ref={(el) => {
+                  searchResultRefs.current[idx] = el;
+                }}
+              >
+                <div
+                  ref={(el) => {
+                    headerRefs.current[idx] = el;
+                  }}
+                  data-idx={idx}
+                  data-search-header
+                  className="sticky top-[var(--menu-height)] bg-color-bg z-2 py-3"
+                >
+                  <div className="opacity-50">
+                    <p className="text-note-3 uppercase pb-1">
+                      pesquisa #{(msg.id ?? idx) + 1} —{" "}
+                      {msg.results.flat().length} potenciais resultados
+                    </p>
+                    <h2 className="text-body-1">{msg.prompt}</h2>
+                  </div>
+                  <span className="block h-px w-full bg-color-1 opacity-50 mt-3" />
+                </div>
+
+                {msg.results.map((projects, resultIdx) => {
+                  if (projects && projects.length > 0) {
+                    const title =
+                      msg.descriptions?.[resultIdx] ||
+                      msg.queries?.[resultIdx] ||
+                      msg.prompt;
+                    return (
+                      <div
+                        key={`${idx}-${resultIdx}`}
+                        data-project-block
+                        ref={(el) => {
+                          projectBlockRefs.current[`${idx}-${resultIdx}`] = el;
+                        }}
+                      >
+                        <ProjectBlock
+                          title={title}
+                          projects={projects}
+                          topOffset={headerHeights[idx] || 0}
+                        />
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+            );
+          }
+
+          // error fallback
+          return (
+            <div
+              key={idx}
+              className="p-6 rounded-xl border border-red-500/30 bg-red-500/5 mt-2"
+            >
+              <p className="text-body-1 text-color-1 mb-2">{msg.prompt}</p>
+              <p className="text-note-3 text-red-500">
+                Não foi possível comunicar com o servidor. Tente novamente mais
+                tarde.
+              </p>
+            </div>
+          );
+        })}
+
+        <div ref={loadingRef}>
+          <SearchLoading isVisible={isLoading} />
+        </div>
       </div>
     </div>
   );
