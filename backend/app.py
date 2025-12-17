@@ -19,6 +19,11 @@ from utilities.ratelimit.setup import initRateLimiter, limiter
 
 app = Flask(__name__)
 
+initDatabase(app)
+initCors(app)
+initRateLimiter(app)
+initScheduler(app)
+
 # ==================================================
 # routes
 # ==================================================
@@ -70,11 +75,6 @@ def get_user_activity():
 # ==================================================
 
 if __name__ == '__main__':
-    initCors(app)
-    initDatabase(app)
-    initRateLimiter(app)
-    initScheduler(app)
-
     try:
         app.run(debug=True, use_reloader=False)
     finally:
