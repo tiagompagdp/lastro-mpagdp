@@ -5,19 +5,28 @@ import { getProject, getSuggestions } from "../requests/requests";
 import ProjectBlock from "../components/ProjectBlock";
 import VideoSection from "../components/VideoSection";
 import ProjectFooter from "../components/ProjectFooter";
+import { useContentReady } from "../composables/usePageTransition";
 
 const Project: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [project, setProject] = useState<Project>();
   const [suggestions, setSuggestions] = useState<Suggestions>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const headerRef = useRef<HTMLDivElement>(null);
 
+  useContentReady(!isLoading);
+
   useEffect(() => {
     if (id) {
-      getProject(id).then((res) => setProject(res as Project));
-      getSuggestions(id).then((res) => setSuggestions(res as Suggestions));
+      setIsLoading(true);
+      Promise.all([
+        getProject(id).then((res) => setProject(res as Project)),
+        getSuggestions(id).then((res) => setSuggestions(res as Suggestions))
+      ]).then(() => {
+        setIsLoading(false);
+      });
     }
   }, [id]);
 

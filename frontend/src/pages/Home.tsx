@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { getRandomProjects } from "../requests/requests";
-import { Link } from "react-router-dom";
+import { useContentReady } from "../composables/usePageTransition";
 
 const Home = () => {
   const [project, setProject] = useState<Project>();
+
+  useContentReady(true);
 
   useEffect(() => {
     getRandomProjects(1).then((res) => setProject((res as Project[])[0]));
@@ -11,11 +13,7 @@ const Home = () => {
 
   if (!project) return <div />;
 
-  return (
-    <div className="grid-setup">
-      <Link to={`/projetos/${project.id}`}>Home</Link>
-    </div>
-  );
+  return <div className="grid-setup">Home</div>;
 };
 
 export default Home;

@@ -13,40 +13,53 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
     <Link
       to={`/projetos/${project.id}`}
-      className="group w-full flex flex-row gap-4"
+      className="group relative w-full flex flex-row gap-4 overflow-hidden rounded-lg p-2"
     >
-      <div className="aspect-square relative h-16 overflow-hidden flex-shrink-0 bg-color-bg flex items-center justify-center">
+      {/* Image wrapper */}
+      <div className="aspect-square relative h-16 flex-shrink-0 rounded-[5%] bg-color-bg overflow-hidden z-10">
+        {/* Loading logo */}
         <img
           src={logoSvg}
           alt="Loading"
-          className={`w-10 h-10 transition-opacity duration-500 ${
+          className={`relative z-10 w-10 h-10 mx-auto my-auto transition-opacity duration-500 ${
             imageLoaded ? "opacity-0" : "opacity-50"
           }`}
         />
+
+        {/* Thumbnail */}
         <img
           src={useVimeoThumb(project.id)}
           alt={project.title}
-          className={`absolute top-0 left-0 w-full h-full rounded-[5%] object-cover grayscale group-hover:grayscale-0 transition-all duration-250 ${
-            imageLoaded ? "opacity-100" : "opacity-0"
-          }`}
           loading="lazy"
           onLoad={() => setImageLoaded(true)}
+          className={`
+            absolute inset-0
+            z-20
+            w-full h-full
+            object-cover
+            grayscale
+            transition-all
+            duration-1000
+            ease-out
+            group-hover:grayscale-0
+            group-hover:scale-[1.02]
+            ${imageLoaded ? "opacity-100" : "opacity-0"}
+          `}
         />
       </div>
 
-      <div>
-        <h3 className="text-body-1">
-          {project.title == "" ? "Sem título registado" : project.title}
+      {/* Text content */}
+      <div className="relative z-10">
+        <h3 className="text-body-1 group-hover:underline transition-all duration-300">
+          {project.title || "Sem título registado"}
         </h3>
 
-        <p className="text-note-2 pt-1 opacity-50">
-          {project.author == "" ? "Sem autor registado" : project.author}
+        <p className="text-note-2 pt-0.5 opacity-50 group-hover:underline transition-all duration-300">
+          {project.author || "Sem autor registado"}
         </p>
 
-        <p className="text-note-3 pt-3">
-          {project.category == ""
-            ? "Sem categoria registada"
-            : project.category}
+        <p className="text-note-3 pt-2 opacity-35">
+          {project.category || "Sem categoria registada"}
         </p>
       </div>
     </Link>

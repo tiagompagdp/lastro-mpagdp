@@ -5,9 +5,12 @@ import CookiePopup from "../components/CookiePopup";
 import ProjectBlock from "../components/ProjectBlock";
 import SearchLoading from "../components/SearchLoading";
 import { useChat } from "../composables/useChat";
+import { useContentReady } from "../composables/usePageTransition";
 
 const Explore: React.FC = () => {
   const { messages, isLoading } = useChat();
+
+  useContentReady(true);
   const [headerHeights, setHeaderHeights] = useState<Record<number, number>>(
     {}
   );
@@ -57,12 +60,9 @@ const Explore: React.FC = () => {
     const header = searchResultEl.querySelector("[data-search-header]");
     const blocks = searchResultEl.querySelectorAll("[data-project-block]");
 
-    if (header instanceof HTMLElement)
-      gsap.set(header, { opacity: 0, xPercent: 20 });
+    const ctx = gsap.context(() => {
+      gsap.set([header, ...Array.from(blocks)], { opacity: 0, xPercent: 20 });
 
-    if (blocks.length > 0) gsap.set(blocks, { opacity: 0, xPercent: 20 });
-
-    const animationFrame = requestAnimationFrame(() => {
       if (header) {
         gsap.to(header, {
           opacity: 1,
@@ -82,11 +82,9 @@ const Explore: React.FC = () => {
           delay: 0.2,
         });
       }
-    });
+    }, searchResultEl);
 
-    return () => {
-      cancelAnimationFrame(animationFrame);
-    };
+    return () => ctx.revert();
   }, [messages.length]);
 
   return (
@@ -103,7 +101,7 @@ const Explore: React.FC = () => {
         </p>
       </div>
 
-      <div>
+      <div className="relative">
         {messages.map((msg, idx) => {
           if (msg.results && msg.results.length > 0) {
             return (
@@ -174,9 +172,11 @@ const Explore: React.FC = () => {
           );
         })}
 
-        <div ref={loadingRef}>
-          <SearchLoading isVisible={isLoading} />
-        </div>
+        {isLoading && (
+          <div ref={loadingRef}>
+            <SearchLoading isVisible={isLoading} />
+          </div>
+        )}
       </div>
     </div>
   );

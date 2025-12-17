@@ -1,37 +1,60 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useLocation, useOutlet } from "react-router-dom";
+import { PageTransitionContext } from "../composables/usePageTransition";
 
 export default function PageTransition() {
   const location = useLocation();
   const [displayLocation, setDisplayLocation] = useState(location);
   const [transitionStage, setTransitionStage] = useState("fadeIn");
+  const [isContentReady, setIsContentReady] = useState(false);
 
   const currentOutlet = useOutlet();
   const displayOutletRef = useRef(currentOutlet);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (location.pathname !== displayLocation.pathname)
+    if (location.pathname !== displayLocation.pathname) {
       setTransitionStage("fadeOut");
-    else displayOutletRef.current = currentOutlet;
+      setIsContentReady(false);
+    } else {
+      displayOutletRef.current = currentOutlet;
+    }
   }, [location.pathname, displayLocation.pathname, currentOutlet]);
+
+  useEffect(() => {
+    if (isContentReady && transitionStage === "waiting") {
+      setTransitionStage("fadeIn");
+    }
+  }, [isContentReady, transitionStage]);
 
   const handleAnimationEnd = () => {
     if (transitionStage === "fadeOut") {
       setDisplayLocation(location);
       displayOutletRef.current = currentOutlet;
       if (containerRef.current) containerRef.current.scrollTop = 0;
-      setTransitionStage("fadeIn");
+      setTransitionStage("waiting");
     }
   };
 
+  const notifyContentReady = useCallback(() => {
+    setIsContentReady(true);
+  }, []);
+
+  const contextValue = useMemo(
+    () => ({ notifyContentReady }),
+    [notifyContentReady]
+  );
+
   return (
-    <div
-      ref={containerRef}
-      className={`page-transition ${transitionStage}`}
-      onAnimationEnd={handleAnimationEnd}
-    >
-      {displayOutletRef.current}
-    </div>
+    <PageTransitionContext.Provider value={contextValue}>
+      <div
+        ref={containerRef}
+        className={`page-transition ${transitionStage === "waiting" ? "" : transitionStage}`}
+        onAnimationEnd={handleAnimationEnd}
+        style={transitionStage === "waiting" ? { opacity: 0 } : undefined}
+      >
+        {displayOutletRef.current}
+      </div>
+    </PageTransitionContext.Provider>
   );
 }

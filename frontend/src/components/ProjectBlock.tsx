@@ -5,8 +5,10 @@ import { useState, useRef } from "react";
 interface ProjectBlockProps {
   title: string;
   projects: Projects;
-  topOffset?: number; // for sticky positioning
+  topOffset?: number;
 }
+
+const CARDS_PER_CHUNK = 10;
 
 const ProjectBlock: React.FC<ProjectBlockProps> = ({
   title,
@@ -14,11 +16,34 @@ const ProjectBlock: React.FC<ProjectBlockProps> = ({
   topOffset = 0,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(CARDS_PER_CHUNK);
+  const [newlyAddedIds, setNewlyAddedIds] = useState<Set<string>>(new Set());
   const blockRef = useRef<HTMLDivElement>(null);
 
   const handleToggle = () => {
     setIsCollapsed((prev) => !prev);
   };
+
+  const handleShowMore = () => {
+    const currentVisible = visibleCount;
+    const newVisible = Math.min(
+      visibleCount + CARDS_PER_CHUNK,
+      projects.length
+    );
+
+    const newIds = new Set<string>();
+    for (let i = currentVisible; i < newVisible; i++) {
+      newIds.add(projects[i].id);
+    }
+    setNewlyAddedIds(newIds);
+    setVisibleCount(newVisible);
+
+    setTimeout(() => {
+      setNewlyAddedIds(new Set());
+    }, 1200); // match animation duration
+  };
+
+  const hasMore = visibleCount < projects.length;
 
   return (
     <div ref={blockRef} className="relative">
@@ -56,13 +81,66 @@ const ProjectBlock: React.FC<ProjectBlockProps> = ({
         `}
       >
         <div className="overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {projects.slice(0, 10).map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="hidden md:block" />
+
+            {[0, 1].map((colIndex) => {
+              const cardsInColumn = projects
+                .slice(0, visibleCount)
+                .filter((_, index) => index % 2 === colIndex);
+
+              return (
+                <div key={colIndex} className="flex flex-col gap-2">
+                  {cardsInColumn.map((project) => {
+                    const isNewCard = newlyAddedIds.has(project.id);
+
+                    return (
+                      <div
+                        key={project.id}
+                        className="will-change-transform"
+                        style={{
+                          animation: isNewCard
+                            ? "slideInFromRight 1.2s cubic-bezier(0.19,1,0.22,1) both"
+                            : undefined,
+                        }}
+                      >
+                        <ProjectCard project={project} />
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+
+            {hasMore && (
+              <>
+                <div className="hidden md:block" />
+                <div className="md:col-span-2">
+                  <button
+                    onClick={handleShowMore}
+                    className="py-2 y-80 text-note-2 underline cursor-pointer text-color-2 hover:text-color-1 transition-all duration-300"
+                  >
+                    Mostrar mais ({projects.length - visibleCount} restantes)
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes slideInFromRight {
+          from {
+            opacity: 0;
+            transform: translate3d(35%, 0, 0);
+          }
+          to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+        }
+      `}</style>
     </div>
   );
 };

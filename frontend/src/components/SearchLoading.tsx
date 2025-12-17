@@ -10,19 +10,26 @@ const SearchLoading: React.FC<SearchLoadingProps> = ({ isVisible }) => {
   const spinnerRef = useRef<SVGSVGElement>(null);
   const wordsRef = useRef<(HTMLSpanElement | null)[]>([]);
   const [shouldRender, setShouldRender] = useState(false);
-  const [showSecondMessage, setShowSecondMessage] = useState(false);
+  const [messageIndex, setMessageIndex] = useState(0);
+
+  const messages = [
+    ["A", "procurar..."],
+    ["Já", "não", "falta", "muito..."],
+    ["A", "ponderar..."],
+    ["Só", "mais", "um", "pouco..."],
+    ["A", "finalizar..."],
+  ];
 
   useEffect(() => {
     if (isVisible) {
       setShouldRender(true);
-      setShowSecondMessage(false);
+      setMessageIndex(0);
 
-      // After 10 seconds, change to second message
-      const timer = setTimeout(() => {
-        setShowSecondMessage(true);
-      }, 2000);
+      const timer = setInterval(() => {
+        setMessageIndex((prev) => (prev + 1) % messages.length);
+      }, 5000);
 
-      return () => clearTimeout(timer);
+      return () => clearInterval(timer);
     }
   }, [isVisible]);
 
@@ -37,7 +44,7 @@ const SearchLoading: React.FC<SearchLoadingProps> = ({ isVisible }) => {
           ease: "power2.in",
           onComplete: () => {
             setShouldRender(false);
-            setShowSecondMessage(false);
+            setMessageIndex(0);
           },
         });
       }, containerRef);
@@ -54,11 +61,10 @@ const SearchLoading: React.FC<SearchLoadingProps> = ({ isVisible }) => {
         gsap.fromTo(
           spinnerRef.current,
           { opacity: 0 },
-          { opacity: 1, duration: 0.5, ease: "power4.out" }
+          { opacity: 1, duration: 0.7, ease: "power4.out" }
         );
       }
 
-      // Animate each word: opacity 0 to 1, y from -10% to 0%
       const validWords = wordsRef.current.filter((ref) => ref !== null);
       if (validWords.length > 0) {
         gsap.fromTo(
@@ -77,13 +83,11 @@ const SearchLoading: React.FC<SearchLoadingProps> = ({ isVisible }) => {
     });
 
     return () => ctx.revert();
-  }, [showSecondMessage, shouldRender]);
+  }, [messageIndex, shouldRender]);
 
   if (!shouldRender) return null;
 
-  const firstMessage = ["A", "procurar..."];
-  const secondMessage = ["Já", "não", "falta", "muito..."];
-  const currentMessage = showSecondMessage ? secondMessage : firstMessage;
+  const currentMessage = messages[messageIndex];
 
   return (
     <div ref={containerRef} className="pt-6 pb-6 min-h-[4rem]">
@@ -112,10 +116,10 @@ const SearchLoading: React.FC<SearchLoadingProps> = ({ isVisible }) => {
             d="M12 2a10 10 0 0 1 10 10"
           ></path>
         </svg>
-        <p className="text-body-1 text-color-2 whitespace-nowrap">
+        <p className="text-body-1 text-color-2">
           {currentMessage.map((word, index) => (
             <span
-              key={`${showSecondMessage ? "second" : "first"}-${index}`}
+              key={`msg-${messageIndex}-${index}`}
               ref={(el) => {
                 wordsRef.current[index] = el;
               }}
