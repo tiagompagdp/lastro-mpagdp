@@ -108,7 +108,7 @@ def buildQuery(field, project):
         try:
             year = value.strftime('%Y-%m-%d').split('-')[0]
             query = f"SELECT * FROM projects WHERE date LIKE '{year}-%'{exclude_clause}"
-            print(f"[Query - date year] {query}")
+            #print(f"[Query - date year] {query}")
             return query
         except:
             return None
@@ -175,7 +175,7 @@ def getDirect(project):
                     "projects": results[0]
                 })
 
-    print(f"[getDirect] Final count: {len(selected)} suggestions with results")
+    #print(f"[getDirect] Final count: {len(selected)} suggestions with results")
     return selected
 
 def getDisruptive(project):

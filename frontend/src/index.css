@@ -135,7 +135,7 @@ body {
   font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
   font-weight: 700;
   font-size: 3rem; /* 48px */
-  /line-height: 1.1;
+  line-height: 1.1;
 }
 
 @utility text-title-1 {
