@@ -110,6 +110,7 @@ const Explore: React.FC = () => {
                 ref={(el) => {
                   searchResultRefs.current[idx] = el;
                 }}
+                className="overflow-x-clip"
               >
                 <div
                   ref={(el) => {
