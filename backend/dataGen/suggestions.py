@@ -4,6 +4,7 @@
 '''
 
 from database.setup import executeQueriesSQL
+from database.models import serializeProjectMinimal
 from dataGen.descriptions import describeDirectSuggestion, describeDisruptiveSuggestion
 import random
 import asyncio
@@ -212,13 +213,13 @@ async def getDirect(project):
     numToSelect = min(nDirect, len(available))
     selected_items = random.choices(available, weights=weights, k=numToSelect)
 
-    # Build final suggestions
+    # Build final suggestions with minimal project data
     selected = []
     for query, results, opt in selected_items:
         description = describeDirectSuggestion(query, opt["field"])
         selected.append({
             "description": description,
-            "projects": results
+            "projects": [serializeProjectMinimal(p) for p in results]
         })
 
     return selected
@@ -308,12 +309,12 @@ async def getDisruptive(project):
     numToSelect = min(nDisruptive, len(results_list))
     selected_items = random.sample(results_list, numToSelect)
 
-    # Build final suggestions
+    # Build final suggestions with minimal project data
     selected = []
     for _, description, projects in selected_items:
         selected.append({
             "description": description,
-            "projects": projects
+            "projects": [serializeProjectMinimal(p) for p in projects]
         })
 
     return selected

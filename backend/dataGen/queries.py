@@ -4,6 +4,7 @@
 '''
 
 from database.setup import db, executeQueriesSQL, recordInteraction
+from database.models import serializeProjectMinimal
 from ai.llm.setup import queryLLM
 
 # ==================================================
@@ -49,7 +50,13 @@ def handleQuery(data):
     #interactionId = recordInteraction(data,modelOutput)
 
     result = stripQueries(modelOutput)
-    result["results"] = executeQueriesSQL(result["queries"])
+    rawResults = executeQueriesSQL(result["queries"])
+
+    # Minimize payload for explore results
+    result["results"] = [
+        [serializeProjectMinimal(project) for project in queryResult]
+        for queryResult in rawResults
+    ]
     #print(result)
 
     return result

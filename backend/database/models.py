@@ -7,6 +7,22 @@ from sqlalchemy import Date
 from datetime import datetime
 from database.setup import db
 
+# ==================================================
+# Utility functions
+# ==================================================
+
+def serializeProjectMinimal(project_dict):
+    """
+    Convert raw SQL project dict to minimal serialized format.
+    Only returns essential fields needed for display in suggestions and search results.
+    """
+    return {
+        "id": project_dict.get("id"),
+        "title": project_dict.get("title"),
+        "author": project_dict.get("author"),
+        "category": project_dict.get("category")
+    }
+
 # -----------------------------
 # Project model
 # -----------------------------
