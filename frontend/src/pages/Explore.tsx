@@ -117,7 +117,7 @@ const Explore: React.FC = () => {
                   }}
                   data-idx={idx}
                   data-search-header
-                  className="sticky top-[var(--menu-height)] bg-color-bg z-2 py-3"
+                  className="sticky top-[var(--menu-height)] bg-color-bg z-10 py-3"
                 >
                   <div className="opacity-50">
                     <p className="text-note-3 uppercase pb-1">
