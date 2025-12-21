@@ -28,10 +28,6 @@ initScheduler(app)
 # routes
 # ==================================================
 
-@app.route('/')
-def home():
-    return 'Lastro Backend is running!'
-
 @app.route('/projects', methods=['GET'])
 def get_projects():
     data = [project.serialize() for project in Project.query.all()]
@@ -69,6 +65,25 @@ def get_user_activity():
     data = [interaction.serialize() for interaction in Interaction.query.all()]
     json_str = json.dumps(data, ensure_ascii=False, indent=2)
     return Response(json_str, mimetype='application/json; charset=utf-8')
+
+@app.route('/')
+def home():
+    return """
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Geist', 'Segoe UI', system-ui, sans-serif;
+            background-color: #080808;
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-size: 16px;
+        }
+    </style>
+    <body>Lastro Backend is running!</body>
+    """
     
 # ==================================================
 # main

@@ -83,9 +83,14 @@ disruptiveOptions = [
 # methods
 # ==================================================
 
-def buildQuery(field, project):
+def buildQueryAndExecute(field, project):
     """
-    Build a SQL query for a given field and project.
+    Build and execute a SQL query for a given field and project.
+    Returns a tuple: (query_string, results_array)
+
+    This avoids double execution by running the query once and returning both
+    the query string (for description generation) and results.
+
     Strategy:
     1. If field is "date" -> match by year only using LIKE 'year-%'
     2. If value contains ", " -> split and use OR
@@ -98,7 +103,7 @@ def buildQuery(field, project):
     value = getattr(project, field, None)
 
     if not value:
-        return None
+        return None, None
 
     # Build exclusion clause to exclude current project
     exclude_clause = f" AND id != {project.id}"
@@ -109,9 +114,10 @@ def buildQuery(field, project):
             year = value.strftime('%Y-%m-%d').split('-')[0]
             query = f"SELECT * FROM projects WHERE date LIKE '{year}-%'{exclude_clause}"
             #print(f"[Query - date year] {query}")
-            return query
+            results = executeQueriesSQL([query])
+            return query, (results[0] if results else None)
         except:
-            return None
+            return None, None
 
     value_str = str(value)
 
@@ -123,7 +129,8 @@ def buildQuery(field, project):
         where_clause = " OR ".join(conditions)
         query = f"SELECT * FROM projects WHERE ({where_clause}){exclude_clause}"
         #print(f"[Query - comma split] {query}")
-        return query
+        results = executeQueriesSQL([query])
+        return query, (results[0] if results else None)
     else:
         # Try exact match first
         query_exact = f"SELECT * FROM projects WHERE {field} LIKE '%{value_str}%'{exclude_clause}"
@@ -134,7 +141,7 @@ def buildQuery(field, project):
 
         if results and results[0]:  # Has results
             #print(f"[Query - exact match SUCCESS] Found {len(results[0])} results")
-            return query_exact
+            return query_exact, results[0]
         else:
             #print(f"[Query - exact match FAILED] No results, trying word split...")
             # Split by space and filter out insignificant words
@@ -146,11 +153,12 @@ def buildQuery(field, project):
                 where_clause = " OR ".join(conditions)
                 query = f"SELECT * FROM projects WHERE ({where_clause}){exclude_clause}"
                 #print(f"[Query - word split] {query}")
-                return query
+                results = executeQueriesSQL([query])
+                return query, (results[0] if results else None)
             else:
-                # Fallback to exact match if no significant words
+                # Fallback to exact match if no significant words (already executed above)
                 #print(f"[Query - fallback to exact] {query_exact}")
-                return query_exact
+                return query_exact, (results[0] if results else None)
 
 def getDirect(project):
     options = directOptions.copy()
@@ -162,18 +170,16 @@ def getDirect(project):
         chosen = random.choices(options, weights=weights, k=1)[0]
         options.remove(chosen)
 
-        # Build and execute query
-        query = buildQuery(chosen["field"], project)
-        if query:
-            results = executeQueriesSQL([query])
-            if results and results[0]:  # Has results
-                # Generate dynamic description
-                description = describeDirectSuggestion(query, chosen["field"])
+        # Build and execute query (now returns both query and results)
+        query, results = buildQueryAndExecute(chosen["field"], project)
+        if query and results:  # Has results
+            # Generate dynamic description
+            description = describeDirectSuggestion(query, chosen["field"])
 
-                selected.append({
-                    "description": description,
-                    "projects": results[0]
-                })
+            selected.append({
+                "description": description,
+                "projects": results
+            })
 
     #print(f"[getDirect] Final count: {len(selected)} suggestions with results")
     return selected
@@ -187,8 +193,8 @@ def getDisruptive(project):
         chosen = random.choice(options)
         options.remove(chosen)
 
-        # Build match query for the matchField
-        match_query = buildQuery(chosen["matchField"], project)
+        # Build and execute match query for the matchField
+        match_query, match_results = buildQueryAndExecute(chosen["matchField"], project)
 
         if match_query:
             # Get the exclude field value
@@ -217,6 +223,7 @@ def getDisruptive(project):
                 # Combine match query with exclude condition
                 final_query = match_query.replace(" AND id !=", exclude_condition + " AND id !=")
 
+                # Execute the disruptive query
                 results = executeQueriesSQL([final_query])
 
                 if results and results[0]:
@@ -228,16 +235,14 @@ def getDisruptive(project):
                         "projects": results[0]
                     })
             else:
-                # No exclude value, use match query alone (less likely but handle gracefully)
-                results = executeQueriesSQL([match_query])
-
-                if results and results[0]:
+                # No exclude value, use match results (already executed)
+                if match_results:
                     # Use direct description as fallback
                     description = describeDirectSuggestion(match_query, chosen["matchField"])
 
                     selected.append({
                         "description": description,
-                        "projects": results[0]
+                        "projects": match_results
                     })
 
     return selected
