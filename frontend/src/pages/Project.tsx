@@ -1,31 +1,49 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import { getProject, getSuggestions } from "../requests/requests";
 import ProjectBlock from "../components/ProjectBlock";
 import VideoSection from "../components/VideoSection";
 import ProjectFooter from "../components/ProjectFooter";
+import LoadingState from "../components/LoadingState";
 import { useContentReady } from "../composables/usePageTransition";
+import gsap from "gsap";
+
+const suggestionsLoadingMessages = [
+  ["A", "gerar", "sugestões..."],
+  ["A", "procurar", "projectos", "relacionados..."],
+];
 
 const Project: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [project, setProject] = useState<Project>();
   const [suggestions, setSuggestions] = useState<Suggestions>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingProject, setIsLoadingProject] = useState(true);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const headerRef = useRef<HTMLDivElement>(null);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
 
-  useContentReady(!isLoading);
+  useContentReady(!!project && !isLoadingProject);
 
   useEffect(() => {
     if (id) {
-      setIsLoading(true);
-      Promise.all([
-        getProject(id).then((res) => setProject(res as Project)),
-        getSuggestions(id).then((res) => setSuggestions(res as Suggestions))
-      ]).then(() => {
-        setIsLoading(false);
+      // Load project first
+      setIsLoadingProject(true);
+      setIsLoadingSuggestions(true);
+      setProject(undefined);
+      setSuggestions([]);
+
+      getProject(id).then((res) => {
+        setProject(res as Project);
+        setIsLoadingProject(false);
+      });
+
+      // Load suggestions separately
+      getSuggestions(id).then((res) => {
+        setSuggestions(res as Suggestions);
+        setIsLoadingSuggestions(false);
       });
     }
   }, [id]);
@@ -41,6 +59,33 @@ const Project: React.FC = () => {
 
     return () => observer.disconnect();
   }, [project]);
+
+  useLayoutEffect(() => {
+    if (
+      !isLoadingSuggestions &&
+      suggestions.length > 0 &&
+      suggestionsRef.current
+    ) {
+      const blocks = suggestionsRef.current.querySelectorAll(
+        "[data-project-block]"
+      );
+      if (blocks.length === 0) return;
+
+      const ctx = gsap.context(() => {
+        gsap.set(blocks, { opacity: 0, xPercent: 20 });
+
+        gsap.to(blocks, {
+          opacity: 1,
+          xPercent: 0,
+          duration: 1.2,
+          stagger: 0.25,
+          ease: "expo.out",
+        });
+      }, suggestionsRef.current);
+
+      return () => ctx.revert();
+    }
+  }, [isLoadingSuggestions, suggestions]);
 
   if (!project) return <div />;
 
@@ -74,14 +119,24 @@ const Project: React.FC = () => {
 
         <VideoSection project={project} />
 
-        {suggestions.map((suggestion, index) => (
-          <ProjectBlock
-            key={index}
-            title={suggestion.description}
-            projects={suggestion.projects}
-            topOffset={headerHeight}
+        {isLoadingSuggestions ? (
+          <LoadingState
+            messages={suggestionsLoadingMessages}
+            fullHeight={true}
           />
-        ))}
+        ) : (
+          <div ref={suggestionsRef} className="overflow-x-clip">
+            {suggestions.map((suggestion, index) => (
+              <div key={index} data-project-block>
+                <ProjectBlock
+                  title={suggestion.description}
+                  projects={suggestion.projects}
+                  topOffset={headerHeight}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <ProjectFooter currentProjectId={id} />

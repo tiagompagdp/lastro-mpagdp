@@ -1,59 +1,36 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
-interface SearchLoadingProps {
-  isVisible: boolean;
+interface LoadingStateProps {
+  messages: string[][];
+  fullHeight?: boolean;
 }
 
-const SearchLoading: React.FC<SearchLoadingProps> = ({ isVisible }) => {
+const LoadingState: React.FC<LoadingStateProps> = ({
+  messages,
+  fullHeight = false,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const spinnerRef = useRef<SVGSVGElement>(null);
   const wordsRef = useRef<(HTMLSpanElement | null)[]>([]);
-  const [shouldRender, setShouldRender] = useState(false);
   const [messageIndex, setMessageIndex] = useState(0);
 
-  const messages = [
-    ["A", "procurar..."],
-    ["Já", "não", "falta", "muito..."],
-    ["A", "ponderar..."],
-    ["Só", "mais", "um", "pouco..."],
-    ["A", "finalizar..."],
-  ];
-
   useEffect(() => {
-    if (isVisible) {
-      setShouldRender(true);
-      setMessageIndex(0);
+    // Reset to first message when component mounts
+    setMessageIndex(0);
 
+    // Cycle through messages
+    if (messages.length > 1) {
       const timer = setInterval(() => {
         setMessageIndex((prev) => (prev + 1) % messages.length);
       }, 5000);
 
       return () => clearInterval(timer);
     }
-  }, [isVisible]);
+  }, [messages.length]);
 
   useEffect(() => {
-    if (!shouldRender || !containerRef.current) return;
-
-    if (!isVisible) {
-      const ctx = gsap.context(() => {
-        gsap.to(containerRef.current, {
-          opacity: 0,
-          duration: 0.3,
-          ease: "power2.in",
-          onComplete: () => {
-            setShouldRender(false);
-            setMessageIndex(0);
-          },
-        });
-      }, containerRef);
-      return () => ctx.revert();
-    }
-  }, [isVisible, shouldRender]);
-
-  useEffect(() => {
-    if (!shouldRender) return;
+    if (!containerRef.current) return;
 
     const ctx = gsap.context(() => {
       // Fade in spinner
@@ -83,14 +60,19 @@ const SearchLoading: React.FC<SearchLoadingProps> = ({ isVisible }) => {
     });
 
     return () => ctx.revert();
-  }, [messageIndex, shouldRender]);
-
-  if (!shouldRender) return null;
+  }, [messageIndex]);
 
   const currentMessage = messages[messageIndex];
 
   return (
-    <div ref={containerRef} className="pt-6 pb-6 min-h-[4rem]">
+    <div
+      ref={containerRef}
+      className={
+        fullHeight
+          ? "flex items-center justify-center h-[50vh]"
+          : "pt-6 pb-6 min-h-[4rem]"
+      }
+    >
       <div className="flex items-center gap-3">
         <svg
           ref={spinnerRef}
@@ -119,7 +101,7 @@ const SearchLoading: React.FC<SearchLoadingProps> = ({ isVisible }) => {
         <p className="text-body-1 text-color-2">
           {currentMessage.map((word, index) => (
             <span
-              key={`msg-${messageIndex}-${index}`}
+              key={`word-${index}`}
               ref={(el) => {
                 wordsRef.current[index] = el;
               }}
@@ -135,4 +117,4 @@ const SearchLoading: React.FC<SearchLoadingProps> = ({ isVisible }) => {
   );
 };
 
-export default SearchLoading;
+export default LoadingState;

@@ -52,7 +52,7 @@ const ProjectBlock: React.FC<ProjectBlockProps> = ({
 
     if (newRows.length > 0) {
       const ctx = gsap.context(() => {
-        gsap.set(newRows, { opacity: 0, xPercent: 20 });
+        gsap.set(newRows, { opacity: 0, xPercent: 10 });
         gsap.to(newRows, {
           opacity: 1,
           xPercent: 0,
@@ -71,7 +71,7 @@ const ProjectBlock: React.FC<ProjectBlockProps> = ({
   }, [visibleCount]);
 
   return (
-    <div ref={blockRef} className="relative z-0">
+    <div ref={blockRef} className="project-block relative z-0">
       <div
         className="sticky bg-color-bg z-10 pt-px pb-3"
         style={{ top: `calc(var(--menu-height) + ${topOffset}px)` }}

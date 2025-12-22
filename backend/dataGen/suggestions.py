@@ -209,9 +209,22 @@ async def getDirect(project):
     available = list(results_map.values())
     weights = [opt["p"] for _, _, opt in available]
 
-    # Randomly select nDirect items (or fewer if not enough results)
+    # Randomly select nDirect items WITHOUT replacement to avoid duplicates
     numToSelect = min(nDirect, len(available))
-    selected_items = random.choices(available, weights=weights, k=numToSelect)
+
+    # Use custom weighted sampling without replacement
+    selected_items = []
+    available_copy = available.copy()
+    weights_copy = weights.copy()
+
+    for _ in range(numToSelect):
+        # Weighted random choice
+        selected_idx = random.choices(range(len(available_copy)), weights=weights_copy, k=1)[0]
+        selected_items.append(available_copy[selected_idx])
+
+        # Remove selected item to prevent duplicates
+        available_copy.pop(selected_idx)
+        weights_copy.pop(selected_idx)
 
     # Build final suggestions with minimal project data
     selected = []
@@ -302,10 +315,21 @@ async def getDisruptive(project):
     # Filter out None and exceptions
     results_list = [r for r in results_list_raw if r and not isinstance(r, Exception)]
 
-    # Randomly select nDisruptive from successful results
+    # Remove duplicates based on matchField and excludeField combination
     if not results_list:
         return []
 
+    # Create a unique key for each option based on its field combination
+    unique_results = {}
+    for option, description, projects in results_list:
+        key = (option["matchField"], option["excludeField"])
+        if key not in unique_results:
+            unique_results[key] = (option, description, projects)
+
+    # Convert back to list
+    results_list = list(unique_results.values())
+
+    # Randomly select nDisruptive from successful unique results
     numToSelect = min(nDisruptive, len(results_list))
     selected_items = random.sample(results_list, numToSelect)
 

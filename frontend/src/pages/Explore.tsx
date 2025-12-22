@@ -3,9 +3,17 @@ import gsap from "gsap";
 
 import CookiePopup from "../components/CookiePopup";
 import ProjectBlock from "../components/ProjectBlock";
-import SearchLoading from "../components/SearchLoading";
+import LoadingState from "../components/LoadingState";
 import { useChat } from "../composables/useChat";
 import { useContentReady } from "../composables/usePageTransition";
+
+const searchLoadingMessages = [
+  ["A", "procurar..."],
+  ["Já", "não", "falta", "muito..."],
+  ["A", "ponderar..."],
+  ["Só", "mais", "um", "pouco..."],
+  ["A", "finalizar..."],
+];
 
 const Explore: React.FC = () => {
   const { messages, isLoading } = useChat();
@@ -177,7 +185,7 @@ const Explore: React.FC = () => {
 
         {isLoading && (
           <div ref={loadingRef}>
-            <SearchLoading isVisible={isLoading} />
+            <LoadingState messages={searchLoadingMessages} />
           </div>
         )}
       </div>

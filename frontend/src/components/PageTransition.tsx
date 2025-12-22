@@ -30,7 +30,7 @@ export default function PageTransition() {
     if (transitionStage === "fadeOut") {
       setDisplayLocation(location);
       displayOutletRef.current = currentOutlet;
-      window.scrollTo(0, 0);
+      //window.scrollTo(0, 0);
       setTransitionStage("waiting");
     }
   };
@@ -47,7 +47,9 @@ export default function PageTransition() {
   return (
     <PageTransitionContext.Provider value={contextValue}>
       <div
-        className={`page-transition ${transitionStage === "waiting" ? "" : transitionStage}`}
+        className={`page-transition ${
+          transitionStage === "waiting" ? "" : transitionStage
+        }`}
         onAnimationEnd={handleAnimationEnd}
         style={transitionStage === "waiting" ? { opacity: 0 } : undefined}
       >
