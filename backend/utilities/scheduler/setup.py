@@ -1,7 +1,10 @@
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+'''
+/utilities/scheduler/setup.py
+-> scheduler setup
+'''
+
 from apscheduler.schedulers.background import BackgroundScheduler
+
 from database.fetchData import fetchCSV
 
 # ==================================================
@@ -14,22 +17,11 @@ scheduler = BackgroundScheduler()
 # methods
 # ==================================================
 
-def send_html_email(html_body):
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = "Scheduled CSV Result"
-    msg["From"] = "noreply@lastro1"
-    msg["To"] = "thomasfresco@live.com"
-    msg.attach(MIMEText(html_body, "html"))
-
-    with smtplib.SMTP("localhost", 25) as server:
-        server.send_message(msg)
-
-def jobToAppContext(app, jobFunction):
+def jobToAppContext(app,jobFunction):
     with app.app_context():
         try:
             result = jobFunction()
-            send_html_email(result)
-            print("Scheduled CSV fetch completed.")
+            print(f"Scheduled CSV fetch completed.")
         except Exception as e:
             print(f"Error in scheduled CSV fetch: {e}")
 
@@ -38,10 +30,11 @@ def jobToAppContext(app, jobFunction):
 # ==================================================
 
 def initScheduler(app):
+    # fetch data from CSV job
     scheduler.add_job(
         func=lambda: jobToAppContext(app, fetchCSV),
         trigger='cron',
-        hour=0, minute=10,
+        hour=0, minute=35,
         timezone='Europe/Lisbon',
         id='fetchCSV_job',
         name='Fetch CSV Data',
