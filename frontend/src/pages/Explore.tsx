@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 
 import CookiePopup from "../components/CookiePopup";
@@ -6,6 +7,7 @@ import ProjectBlock from "../components/ProjectBlock";
 import LoadingState from "../components/LoadingState";
 import { useChat } from "../composables/useChat";
 import { useContentReady } from "../composables/usePageTransition";
+import { getRandomProjects } from "../requests/requests";
 
 const searchLoadingMessages = [
   ["A", "procurar..."],
@@ -16,7 +18,8 @@ const searchLoadingMessages = [
 ];
 
 const Explore: React.FC = () => {
-  const { messages, isLoading } = useChat();
+  const { messages, isLoading, addMessage } = useChat();
+  const navigate = useNavigate();
 
   useContentReady(true);
   const [headerHeights, setHeaderHeights] = useState<Record<number, number>>(
@@ -26,7 +29,28 @@ const Explore: React.FC = () => {
   const searchResultRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const projectBlockRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const loadingRef = useRef<HTMLDivElement | null>(null);
-  const animatedIndices = useRef<Set<number>>(new Set());
+  const animatedMessageIds = useRef<Set<number>>(new Set());
+
+  const handleStartExploring = async () => {
+    try {
+      const randomProjects = await getRandomProjects(100);
+      const descriptions = [
+        "Um ponto de partida",
+        "Apenas o começo",
+        "Vai um empurrão?",
+      ];
+      const randomDescription =
+        descriptions[Math.floor(Math.random() * descriptions.length)];
+
+      addMessage({
+        prompt: "começar a explorar",
+        descriptions: [randomDescription],
+        results: [randomProjects as Projects],
+      });
+    } catch (error) {
+      console.error("Error fetching random projects:", error);
+    }
+  };
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -60,10 +84,17 @@ const Explore: React.FC = () => {
   useLayoutEffect(() => {
     if (messages.length === 0) return;
     const latestIdx = messages.length - 1;
-    if (animatedIndices.current.has(latestIdx)) return;
+    const latestMessage = messages[latestIdx];
+    const messageId = latestMessage.id ?? latestIdx;
+
+    // Check if this message has already been animated by its unique ID
+    if (animatedMessageIds.current.has(messageId)) return;
+
     const searchResultEl = searchResultRefs.current[latestIdx];
     if (!searchResultEl) return;
-    animatedIndices.current.add(latestIdx);
+
+    // Mark this message ID as animated
+    animatedMessageIds.current.add(messageId);
 
     const header = searchResultEl.querySelector("[data-search-header]");
     const blocks = searchResultEl.querySelectorAll("[data-project-block]");
@@ -93,19 +124,28 @@ const Explore: React.FC = () => {
     }, searchResultEl);
 
     return () => ctx.revert();
-  }, [messages.length]);
+  }, [messages.length, messages]);
 
   return (
     <div className="grid-setup !pt-[var(--menu-height)] overflow-x-clip">
       <CookiePopup />
 
       <div
-        className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center transition-opacity duration-250 ease-out pointer-events-none z-0 ${
-          messages.length > 0 || isLoading ? "opacity-0" : "opacity-100"
+        className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center transition-opacity duration-250 ease-out z-0 ${
+          messages.length > 0 || isLoading
+            ? "opacity-0 pointer-events-none"
+            : "opacity-100"
         }`}
       >
-        <p className="text-body-1 text-color-1 opacity-50">
-          Escreva na barra de pesquisa para começar.
+        <p className="text-body-1 text-color-1">
+          <span className="opacity-50">Escreva na barra de pesquisa ou </span>
+          <button
+            onClick={handleStartExploring}
+            className="text-color-1 opacity-50 hover:opacity-100 underline transition-opacity duration-300 cursor-pointer"
+          >
+            clique aqui
+          </button>
+          <span className="opacity-50"> para começar.</span>
         </p>
       </div>
 
@@ -135,7 +175,22 @@ const Explore: React.FC = () => {
                         ? "potencial resultado"
                         : "potenciais resultados"}
                     </p>
-                    <h2 className="text-body-1">{msg.prompt}</h2>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h2 className="text-body-1">{msg.prompt}</h2>
+                      {msg.contextProject && (
+                        <button
+                          onClick={() =>
+                            navigate(`/projetos/${msg.contextProject!.id}`)
+                          }
+                          className="text-note-2 text-color-2 hover:text-color-1 transition-colors group"
+                        >
+                          <span className="opacity-60 group-hover:opacity-100 transition-opacity">
+                            [a partir de {msg.contextProject.title} —{" "}
+                            {msg.contextProject.author}]
+                          </span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <span className="block h-px w-full bg-color-1 opacity-50 mt-3" />
                 </div>

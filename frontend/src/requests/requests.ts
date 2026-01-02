@@ -21,6 +21,7 @@ export async function sendQuery(data: {
   userIp: string;
   previousQueries: string[];
   currentPrompt: string;
+  currentProjectId?: string;
 }): Promise<QueryResponse> {
   return postRequest<QueryResponse>("/query", data);
 }

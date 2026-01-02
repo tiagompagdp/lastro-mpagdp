@@ -31,16 +31,24 @@ interface CookiePopupProps {
   onAccept?: () => void;
 }
 
+interface ContextProject {
+  title: string;
+  author: string;
+  id: string;
+}
+
 interface ChatMessage {
   id?: number; // Unique sequential ID for each message
   prompt: string;
   queries?: string[];
   descriptions?: string[];
   results?: Projects[];
+  contextProject?: ContextProject;
 }
 
 interface QueryResponse {
   queries: string[];
   descriptions: string[];
   results: Projects[];
+  contextProject?: ContextProject;
 }

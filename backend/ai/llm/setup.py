@@ -43,14 +43,20 @@ def process_prompt_for_action(currentPrompt, previousQueries):
 
 def queryLLM(currentPrompt, previousQueries):
     action = process_prompt_for_action(currentPrompt, previousQueries)
-    
-    previousSection = "\n".join(previousQueries) if previousQueries else "None"
 
-    formattedPrompt = (
-        f"<ACTION>{action}</ACTION>\n"
-        f"<PREV_SQL>{previousSection}</PREV_SQL>\n"
-        f"<PROMPT>{currentPrompt}</PROMPT>"
-    )
+    # Only include PREV_SQL if action is MERGE
+    if action == 'MERGE' and previousQueries:
+        previousSection = "\n".join(previousQueries)
+        formattedPrompt = (
+            f"<ACTION>{action}</ACTION>\n"
+            f"<PREV_SQL>{previousSection}</PREV_SQL>\n"
+            f"<PROMPT>{currentPrompt}</PROMPT>"
+        )
+    else:
+        formattedPrompt = (
+            f"<ACTION>{action}</ACTION>\n"
+            f"<PROMPT>{currentPrompt}</PROMPT>"
+        )
 
     print(f"DEBUG ACTION: {action}")
     print(f"DEBUG PROMPT INJECTED:\n{formattedPrompt}")

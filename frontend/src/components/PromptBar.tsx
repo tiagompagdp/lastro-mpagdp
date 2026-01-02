@@ -25,6 +25,10 @@ const PromptBar = () => {
 
     const prompt = input.trim();
 
+    // Extract project ID from path like /projetos/1434903174
+    const projectMatch = location.pathname.match(/^\/projetos\/(\d+)$/);
+    const currentProjectId = projectMatch ? projectMatch[1] : undefined;
+
     if (location.pathname !== "/explorar") navigate("/explorar");
 
     setIsLoading(true);
@@ -37,6 +41,7 @@ const PromptBar = () => {
           .slice(-historySize)
           .map((msg) => msg.queries?.[0] || ""),
         currentPrompt: prompt,
+        currentProjectId,
       });
 
       addMessage({
@@ -44,6 +49,7 @@ const PromptBar = () => {
         queries: response.queries,
         descriptions: response.descriptions,
         results: response.results,
+        contextProject: response.contextProject,
       });
       setInput("");
     } catch (err) {

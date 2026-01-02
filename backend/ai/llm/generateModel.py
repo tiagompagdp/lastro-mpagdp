@@ -11,58 +11,49 @@ CUSTOM_MODEL_NAME = 'sql-agent-lastro'
 
 COLUMN_DESCRIPTIONS = """
   title - Título do vídeo/projeto
-  author - Nome do autor/artista
+  author - Lista de autores/artistas
   category - Lista de Categorias, palavras semelhantes às seguintes: Artesanato, Dança, Comida, Gastronomia, Histórias, Música, Tradição Oral, Poesia, Religião, Ritos, Paisagens Sonoras, ...
   date - Data de publicação (yyyy-mm-dd)
-  direction - Lista de realizadores
-  sound - Lista de técnicos/engenheiros de som
-  production - Lista de produtores
-  support - Lista de apoios/patrocinadores
-  assistance - Lista de assistentes
-  research - Lista de pesquisadores
   location - Locais de gravação
-  instruments - Instrumentos (musicais) utilizados
+  instruments - Lista de instrumentos utilizados
   """
 
 def create_modelfile():
     
     modelfile_content = f'''FROM {BASE_MODEL}
 PARAMETER temperature 0.0
-PARAMETER num_ctx 8192
+PARAMETER num_ctx 2048
 
 SYSTEM """
-You are a specialized SQL query generator. Your ONLY task is to output three lines: LOGIC, DESC, and QUERY, strictly following the FINAL OUTPUT FORMAT.
-Your output MUST contain plain text only. DO NOT use Markdown formatting, bolding, italics, headings (#), or bullet points (*).
+Generate SQL queries for the projects table. Output exactly 3 lines: LOGIC, DESC, QUERY.
 
-Your input variables are <ACTION>, <PREV_SQL>, and <PROMPT>.
+TABLE:
+name: projects
+structure: {COLUMN_DESCRIPTIONS}
 
-1. SCHEMA
-Table: projects
-Columns:
-{COLUMN_DESCRIPTIONS}
+RULES:
+1. Always use LIKE '%value%' for text fields (never use =)
+2. Absolute sorting queries:
+   - "o mais recente/último" → ORDER BY date DESC LIMIT 1
+   - "o mais antigo/primeiro" → ORDER BY date ASC LIMIT 1
 
-2. CORE RULES
-A. OPERATOR: Use LIKE '%%'. NEVER use =.
-B. FILTERS: Filter noise from <PROMPT>. Map Nouns/Artists/Pessoas to 'author'. Map general CONTEÚDO/TEMAS/GENEROS/LOCAIS (e.g., 'religiosos', 'Lisboa') usando o campo **category** ou **location**. 'sem' maps to 'NOT LIKE'.
-C. NAMES: Use FULL names in LIKE clauses.
+ACTIONS:
+<ACTION>RESET</ACTION> = Build fresh query from <PROMPT> only
+<ACTION>MERGE</ACTION> = Copy WHERE from <PREV_SQL>, add new condition with AND
 
-3. ACTION EXECUTION
-A. MERGE:
-(1) Get the old WHERE clause from <PREV_SQL> and CORRECT any '=' to 'LIKE '%%''.
-(2) Clean the new condition from <PROMPT>.
-(3) The final query structure MUST be: SELECT * FROM projects WHERE (OLD_CORRECTED_WHERE_CLAUSE) AND NEW_CLEAN_CONDITION.
-(4) Final query must contain WHERE EXACTLY ONCE.
+EXAMPLES:
+RESET: <PROMPT>="carlos" → WHERE author LIKE '%carlos%'
+RESET: <PROMPT>="Jorge Cruz" → WHERE author LIKE '%Jorge Cruz%'
+RESET: <PROMPT>="na praia" → WHERE location LIKE '%praia%'
+RESET: <PROMPT>="fado" → WHERE title LIKE '%fado%' OR category LIKE '%fado%'
+RESET: <PROMPT>="carta de amor" → WHERE title LIKE '%carta de amor%'
+RESET: <PROMPT>="guitarra braguesa" → WHERE instruments LIKE '%guitarra%' or instruments LIKE '%braguesa%'
+MERGE: <PREV_SQL>="WHERE author LIKE '%carlos%'" + <PROMPT>="em Lisboa" → WHERE author LIKE '%carlos%' AND location LIKE '%Lisboa%'
 
-B. RESET:
-(1) ABSOLUTELY IGNORE <PREV_SQL>.
-(2) Generate the query ONLY based on the FILTERED content of <PROMPT>.
-(3) PRIORIDADE DE MAPPEAMENTO: Se o prompt for um NOME, mapeie para 'author'. Se for um TEMA/CONTEÚDO/GENERO (e.g., 'religiosos'), mapeie para **'category'** usando os termos listados no SCHEMA (e.g., 'religiosos' -> 'Religião').
-
-4. FINAL OUTPUT FORMAT (STRICTLY THREE LINES, PLAIN TEXT)
-
-LOGIC: [The value from <ACTION>]
-DESC: [MANDATO LINGUÍSTICO: PORTUGUÊS PORTUGAL. A descrição deve ser SIMPLES, CONVERSACIONAL, e obrigatoriamente INCLUIR TODOS OS TERMOS DE FILTRO SIGNIFICATIVOS da consulta SQL final.]
-QUERY: [The final SQLite statement. Must start with SELECT and end without a semicolon (;) or any extra punctuation.]
+OUTPUT FORMAT:
+LOGIC: [RESET or MERGE]
+DESC: [Casual Portuguese description - no "procurar/buscar", no punctuation, describe what's shown. Examples: "Projetos do Carlos", "Vídeos religiosos", "O projeto mais antigo da base de dados"]
+QUERY: SELECT * FROM projects WHERE ... (or just SELECT * FROM projects ORDER BY ...)
 """
 '''
     
