@@ -14,7 +14,7 @@ const About: React.FC<ProjectBlockProps> = ({
 
   return <div className="grid-setup">
     <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-0 md:gap-6 lg:gap-8">
-      <div>
+      <div className="order-2 md:order-1">
         <div className="sticky bg-color-bg z-10 pt-px pb-3"
           style={{ top: `calc(var(--menu-height) + ${topOffset}px)` }}>
             <h2 className="text-title-2 mb-3">Contactos</h2>
@@ -40,7 +40,7 @@ const About: React.FC<ProjectBlockProps> = ({
           </div>
         </div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col order-1 md:order-2">
         <div className="mb-24">
           <div className="sticky bg-color-bg z-10 pt-px pb-3"
           style={{ top: `calc(var(--menu-height) + ${topOffset}px)` }}>
