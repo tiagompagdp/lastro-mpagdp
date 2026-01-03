@@ -4,7 +4,6 @@
 '''
 
 import re
-from database.setup import getConnection
 
 # ==================================================
 # Constants
