@@ -169,26 +169,25 @@ const Explore: React.FC = () => {
                 >
                   <div className="opacity-50">
                     <p className="text-note-3 uppercase pb-1">
-                      pesquisa #{(msg.id ?? idx) + 1} —
+                      pesquisa #{(msg.id ?? idx) + 1}{msg.contextProject && (
+                        <span> — <button
+                            onClick={() =>
+                              navigate(`/projetos/${msg.contextProject!.id}`)
+                            }
+                            className="text-note-2 text-color-2 hover:text-color-1 transition-colors group"
+                          >
+                            <span className="opacity-60 group-hover:opacity-100 transition-opacity">
+                              [a partir de {msg.contextProject.title} —{" "}
+                              {msg.contextProject.author}]
+                            </span>
+                          </button>
+                        </span>
+                      )}
                     </p>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h2 className="text-body-1">{msg.prompt}</h2>
-                      {msg.contextProject && (
-                        <button
-                          onClick={() =>
-                            navigate(`/projetos/${msg.contextProject!.id}`)
-                          }
-                          className="text-note-2 text-color-2 hover:text-color-1 transition-colors group"
-                        >
-                          <span className="opacity-60 group-hover:opacity-100 transition-opacity">
-                            [a partir de {msg.contextProject.title} —{" "}
-                            {msg.contextProject.author}]
-                          </span>
-                        </button>
-                      )}
                     </div>
                   </div>
-                  <span className="block h-px w-full bg-color-1 opacity-50 mt-3" />
                 </div>
 
                 {msg.results.map((projects, resultIdx) => {
