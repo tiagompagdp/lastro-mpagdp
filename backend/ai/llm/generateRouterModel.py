@@ -6,14 +6,13 @@
 import subprocess
 import sys
 
-BASE_MODEL = 'llama3.1:8b'
+BASE_MODEL = 'llama3.2:3b'
 CUSTOM_MODEL_NAME = 'context-router-lastro'
 
 def create_modelfile():
     modelfile_content = f'''FROM {BASE_MODEL}
 PARAMETER temperature 0.0
-PARAMETER num_predict 3
-PARAMETER num_ctx 256
+PARAMETER num_ctx 1024
 
 SYSTEM """
 You are a STRICT comparison router.
@@ -48,6 +47,7 @@ mesmo
 igual
 iguais
 semelhante
+similar
 parecido
 do mesmo tipo
 
@@ -58,24 +58,25 @@ outra
 distinto
 
 VALID EXAMPLES:
-"mesmo autor" → author-equal
-"autor semelhante" → author-equal
-"outro autor" → author-different
-"autor diferente" → author-different
+"mesmo autor" -> author-equal
+"autor semelhante" -> author-equal
+"outro autor" -> author-different
+"autor diferente" -> author-different
 
-"mesmo tipo" → category-equal
-"categoria semelhante" → category-equal
-"outro tipo" → category-different
+"mesmo tipo" -> category-equal
+"categoria semelhante" -> category-equal
+"outro tipo" -> category-different
 
-"mesmos instrumentos" → instruments-equal
-"instrumentos diferentes" → instruments-different
+"mesmos instrumentos" -> instruments-equal
+"instrumentos diferentes" -> instruments-different
 
-"mesmo local" → location-equal
-"local diferente" → location-different
-"local próximo" → location-equal
+"mesmo local" -> location-equal
+"sítio diferente" -> location-different
+"local próximo" -> location-equal
+"sítio semelhante" -> location-equal
 
-"mesmo ano" → date-equal
-"ano diferente" → date-different
+"mesmo ano" -> date-equal
+"ano diferente" -> date-different
 
 NON-COMPARISON EXAMPLES (ALWAYS none-none):
 "projetos sobre flores"
