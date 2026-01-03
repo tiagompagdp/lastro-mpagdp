@@ -12,11 +12,8 @@ CUSTOM_MODEL_NAME = 'context-router-lastro'
 def create_modelfile():
     modelfile_content = f'''FROM {BASE_MODEL}
 PARAMETER temperature 0.0
-PARAMETER num_predict 5
+PARAMETER num_predict 3
 PARAMETER num_ctx 256
-PARAMETER top_p 1.0
-PARAMETER repeat_penalty 1.1
-PARAMETER stop "\\n"
 
 SYSTEM """
 You are a STRICT comparison router.
