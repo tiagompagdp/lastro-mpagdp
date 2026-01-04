@@ -1,5 +1,5 @@
 import ProjectCard from "./ProjectCard";
-import { MdArrowBackIosNew } from "react-icons/md";
+import { SlArrowLeft } from "react-icons/sl";
 import { useState, useRef, useLayoutEffect } from "react";
 import gsap from "gsap";
 
@@ -83,7 +83,7 @@ const ProjectBlock: React.FC<ProjectBlockProps> = ({
             className="text-xl hover:opacity-70 transition-opacity mt-[2px] cursor-pointer"
             aria-label={isCollapsed ? "Expand section" : "Collapse section"}
           >
-            <MdArrowBackIosNew
+            <SlArrowLeft
               className={`transition-transform duration-250 ${
                 isCollapsed ? "-rotate-180" : "-rotate-90"
               }`}

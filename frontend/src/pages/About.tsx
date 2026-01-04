@@ -14,13 +14,13 @@ const About: React.FC<ProjectBlockProps> = ({
 
   return <div className="grid-setup">
     <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-0 md:gap-6 lg:gap-8">
-      <div className="order-2 md:order-1">
-        <div className="sticky bg-color-bg z-10 pt-px pb-3"
-          style={{ top: `calc(var(--menu-height) + ${topOffset}px)` }}>
+      <div className="sticky order-2 md:order-1 md:min-h-[calc(100vh-var(--grid-y-padding-desktop)*2)] md:h-0 flex flex-col"
+        style={{ top: `calc(var(--grid-y-padding-desktop) + ${topOffset}px)` }}>
+        <div className="bg-color-bg z-10 pt-px pb-3">
             <h2 className="text-title-2 mb-3">Contactos</h2>
           <span className="block h-px w-full bg-color-1 opacity-50" />
         </div>
-        <div className="flex flex-col justify-between min-h-[calc(100%-var(--menu-height))] gap-3">
+        <div className="flex flex-col justify-between gap-3 h-full">
           <div className="flex flex-col">
             <a href="mailto:amusicaportuguesa@gmail.com" target="_blank">amusicaportuguesa@gmail.com</a>
             <a href="https://amusicaportuguesaagostardelapropria.org/" target="_blank">Website</a>

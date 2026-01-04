@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Player from "@vimeo/player";
 import { getRandomProjects } from "../requests/requests";
 import { useChat } from "../composables/useChat";
+import logoSvg from "../assets/logo.svg";
+import { SlArrowDown } from "react-icons/sl";
 
 interface ProjectFooterProps {
   currentProjectId?: string;
@@ -71,30 +73,48 @@ export default function ProjectFooter({
 
       <div className="absolute top-0 w-screen h-[100vh] bg-gradient-to-b from-transparent to-color-bg z-0" />
 
-      <div className="relative z-10 flex flex-col items-center justify-center h-full text-color-1 text-center px-8 pt-[var(--menu-height)]">
-        <h2 className="text-title-1 font-bold mb-12 whitespace-pre-line w-[calc(100vw-var(--grid-x-padding-mobile)*2)] md:w-[80%] max-w-[1024px]">
-          {"Viaja no arquivo áudio-visual da Música Ibérica a gostar dela própria e descobre a riqueza do património humano deste território."}
-        </h2>
+      <div className="relative z-10 flex flex-col items-center justify-between h-full text-color-1 text-center px-8 pt-[var(--menu-height)]">
+        <a href="https://amusicaportuguesaagostardelapropria.org/" target="_blank"><img src={logoSvg}
+        className={`relative z-10 w-15 h-15 mx-auto transition-opacity duration-500 mt-12`}
+        /></a>
+        <div className="flex flex-col items-center">
+          <h1 className="text-title-1 font-bold mb-6 whitespace-pre-line w-[calc(100vw-var(--grid-x-padding-mobile)*2)] md:w-[80%] max-w-[1024px]">LASTRO</h1>
+          <h2 className="text-title-2 mb-12 whitespace-pre-line w-[calc(100vw-var(--grid-x-padding-mobile)*2)] md:w-[80%] max-w-[1024px]">
+            {"Motor de busca da Música Portuguesa a Gostar Dela Própria."}
+          </h2>
 
-        <div className="flex gap-4 flex-wrap justify-center text-body-1">
-          <button
-            onClick={() => navigate(`/projetos/${videoId}`)}
-            className="px-5 py-3 bg-color-1 text-color-bg font-bold rounded-lg hover:bg-color-1/80 transition-all duration-250 cursor-pointer"
-          >
-            <span>Ver </span>
-            <span>{projectTitle}</span>
-          </button>
+          <div className="flex gap-4 flex-wrap justify-center text-body-1">
+            <button
+              onClick={() => navigate(`/projetos/${videoId}`)}
+              className="px-5 py-3 bg-color-1 text-color-bg font-bold rounded-lg hover:bg-color-1/80 transition-all duration-250 cursor-pointer"
+            >
+              <span>Ver </span>
+              <span>{projectTitle}</span>
+            </button>
 
-          <button
-            onClick={() => {
-              clearMessages();
-              navigate("/explorar");
-            }}
-            className="px-5 py-3 rounded-lg border border-color-2/40 text-color-2 hover:text-color-1 hover:border-color-1 bg-color-bg/20 hover:bg-color-bg/50 transition-all duration-250 backdrop-blur-sm cursor-pointer"
-          >
-            Nova Exploração
-          </button>
+            <button
+              onClick={() => {
+                clearMessages();
+                navigate("/explorar");
+              }}
+              className="px-5 py-3 rounded-lg border border-color-2/40 text-color-2 hover:text-color-1 hover:border-color-1 bg-color-bg/20 hover:bg-color-bg/50 transition-all duration-250 backdrop-blur-sm cursor-pointer"
+            >
+              Nova Exploração
+            </button>
+          </div>
         </div>
+
+        <SlArrowDown
+          className="mb-[calc(var(--menu-height)*2)] text-white h-6 w-6"
+          style={{
+            opacity: 0,
+            animation: `
+              fadeIn 2s ease forwards 4s,
+              bounce 2s ease-out infinite
+            `,
+          }}
+          aria-label="Scroll down"
+        />
       </div>
     </div>
   );

@@ -16,53 +16,32 @@ const ProjectBlockHome: React.FC<ProjectBlockProps> = ({
   topOffset = 0,
 }) => {
   const [isCollapsed] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(CARDS_PER_CHUNK);
+  const [visibleCount] = useState(CARDS_PER_CHUNK);
 
   const blockRef = useRef<HTMLDivElement>(null);
   const previousVisibleCount = useRef(CARDS_PER_CHUNK);
 
-  const handleShowMore = () => {
-    setVisibleCount((prev) =>
-      Math.min(prev + CARDS_PER_CHUNK, projects.length)
-    );
-  };
-
-  const hasMore = visibleCount < projects.length;
-
   useLayoutEffect(() => {
     if (!blockRef.current) return;
-    if (visibleCount <= previousVisibleCount.current) return;
 
-    const newCards = Array.from(
-      blockRef.current.querySelectorAll<HTMLElement>(
-        `[data-card-index]`
-      )
-    ).filter((el) => {
-      const index = Number(el.dataset.cardIndex);
-      return (
-        index >= previousVisibleCount.current &&
-        index < visibleCount
-      );
-    });
+    const cards = blockRef.current.querySelectorAll<HTMLElement>(
+      "[data-card-index]"
+    );
 
-    if (newCards.length) {
-      const ctx = gsap.context(() => {
-        gsap.set(newCards, { opacity: 0, xPercent: 10 });
-        gsap.to(newCards, {
-          opacity: 1,
-          xPercent: 0,
-          duration: 1,
-          stagger: 0.08,
-          ease: "expo.out",
-        });
-      }, blockRef);
-
-      previousVisibleCount.current = visibleCount;
-      return () => ctx.revert();
-    }
+    const ctx = gsap.context(() => {
+      gsap.set(cards, { opacity: 0, xPercent: 10 });
+      gsap.to(cards, {
+        opacity: 1,
+        xPercent: 0,
+        duration: 1,
+        stagger: 0.08,
+        ease: "expo.out",
+      });
+    }, blockRef);
 
     previousVisibleCount.current = visibleCount;
-  }, [visibleCount]);
+    return () => ctx.revert();
+  }, []);
 
   return (
     <div ref={blockRef} className="project-block relative z-0">
@@ -89,7 +68,7 @@ const ProjectBlockHome: React.FC<ProjectBlockProps> = ({
       >
         <div className="overflow-hidden">
         <div className="flex flex-wrap gap-y-6 md:gap-y-8 -mx-0 md:-mx-3 lg:-mx-4">
-            {projects.slice(0, visibleCount).map((project, index) => (
+            {projects.map((project, index) => (
             <div
               key={project.id}
               data-card-index={index}
@@ -104,26 +83,6 @@ const ProjectBlockHome: React.FC<ProjectBlockProps> = ({
             </div>
           ))}
         </div>
-
-        {hasMore && (
-          <div className="pt-6">
-            <button
-              onClick={handleShowMore}
-              className="
-                h-8
-                text-note-2
-                underline
-                cursor-pointer
-                text-color-2
-                hover:text-color-1
-                transition-all
-                duration-300
-              "
-            >
-              Mostrar mais ({projects.length - visibleCount} restantes)
-            </button>
-          </div>
-        )}
         </div>
       </div>
     </div>
