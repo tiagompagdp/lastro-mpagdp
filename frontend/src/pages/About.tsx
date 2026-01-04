@@ -12,31 +12,40 @@ const About: React.FC<ProjectBlockProps> = ({
 }) => {
   useContentReady(true);
 
-  return <div className="grid-setup">
+  return <div className="grid-setup overflow-x-clip">
     <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-0 md:gap-6 lg:gap-8">
-      <div className="sticky order-2 md:order-1 md:min-h-[calc(100vh-var(--grid-y-padding-desktop)*2)] md:h-0 flex flex-col"
-        style={{ top: `calc(var(--grid-y-padding-desktop) + ${topOffset}px)` }}>
+      <div className="sticky order-2 md:order-1 md:h-0 flex flex-col"
+        style={{ top: `calc(var(--menu-height) + ${topOffset}px)` }}>
         <div className="bg-color-bg z-10 pt-px pb-3">
-            <h2 className="text-title-2 mb-3">Contactos</h2>
+          <h2 className="text-title-2 mb-3">Contactos</h2>
           <span className="block h-px w-full bg-color-1 opacity-50" />
         </div>
         <div className="flex flex-col justify-between gap-3 h-full">
           <div className="flex flex-col">
-            <a href="mailto:amusicaportuguesa@gmail.com" target="_blank">amusicaportuguesa@gmail.com</a>
-            <a href="https://amusicaportuguesaagostardelapropria.org/" target="_blank">Website</a>
-            <a href="https://vimeo.com/mpagdp" target="_blank">Vimeo</a>
-            <a href="https://www.facebook.com/amusicaportuguesaagostardelapropria" target="_blank">Facebook</a>
-            <a href="https://www.instagram.com/mpagdp/" target="_blank">Instagram</a>
-            <a href="https://www.tiktok.com/@mpagdp.official" target="_blank">TikTok</a>
-            <a href="https://linktr.ee/mpagdp" target="_blank">Mais</a>
+            <a className="cursor-pointer text-color-2 hover:text-color-1 transition-all duration-300"
+            href="mailto:amusicaportuguesa@gmail.com" target="_blank">amusicaportuguesa@gmail.com</a>
+            <a className="cursor-pointer text-color-2 hover:text-color-1 transition-all duration-300"
+            href="https://amusicaportuguesaagostardelapropria.org/" target="_blank">Website</a>
+            <a className="cursor-pointer text-color-2 hover:text-color-1 transition-all duration-300"
+            href="https://vimeo.com/mpagdp" target="_blank">Vimeo</a>
+            <a className="cursor-pointer text-color-2 hover:text-color-1 transition-all duration-300"
+            href="https://www.facebook.com/amusicaportuguesaagostardelapropria" target="_blank">Facebook</a>
+            <a className="cursor-pointer text-color-2 hover:text-color-1 transition-all duration-300"
+            href="https://www.instagram.com/mpagdp/" target="_blank">Instagram</a>
+            <a className="cursor-pointer text-color-2 hover:text-color-1 transition-all duration-300"
+            href="https://www.tiktok.com/@mpagdp.official" target="_blank">TikTok</a>
+            <a className="cursor-pointer text-color-2 hover:text-color-1 transition-all duration-300"
+            href="https://linktr.ee/mpagdp" target="_blank">Mais</a>
           </div>
-          <div className="flex flex-col justify-start gap-3">
+          <div className="flex flex-col justify-start gap-3 mt-12">
             <a href="https://amusicaportuguesaagostardelapropria.org/" target="_blank"><img
               src={logoSvg}
               alt="Loading"
               className={`relative z-10 w-10 h-10 transition-opacity duration-500`}
             /></a>
-            <p>Com ❤︎ por <a href="" target="_blank">Thomas Fresco</a> e <a href="" target="_blank">Fábio Gouveia</a>.</p>
+            <p>Com ❤︎ por <a className="cursor-pointer text-color-2 hover:text-color-1 transition-all duration-300"
+            href="" target="_blank">Thomas Fresco</a> e <a className="cursor-pointer text-color-2 hover:text-color-1 transition-all duration-300"
+            href="" target="_blank">Fábio Gouveia</a>.</p>
           </div>
         </div>
       </div>
