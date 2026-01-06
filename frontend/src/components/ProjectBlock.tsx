@@ -1,5 +1,5 @@
 import ProjectCard from "./ProjectCard";
-import { MdArrowBackIosNew } from "react-icons/md";
+import { SlArrowLeft } from "react-icons/sl";
 import { useState, useRef, useLayoutEffect } from "react";
 import gsap from "gsap";
 
@@ -76,20 +76,19 @@ const ProjectBlock: React.FC<ProjectBlockProps> = ({
         className="sticky bg-color-bg z-10 pt-px pb-3"
         style={{ top: `calc(var(--menu-height) + ${topOffset}px)` }}
       >
-        <div className="flex items-start gap-4 mb-3">
+        <div className="flex justify-between gap-4 mb-3">
+          <h2 className="text-title-2">{title}</h2>
           <button
             onClick={handleToggle}
             className="text-xl hover:opacity-70 transition-opacity mt-[2px] cursor-pointer"
             aria-label={isCollapsed ? "Expand section" : "Collapse section"}
           >
-            <MdArrowBackIosNew
+            <SlArrowLeft
               className={`transition-transform duration-250 ${
                 isCollapsed ? "-rotate-180" : "-rotate-90"
               }`}
             />
           </button>
-
-          <h2 className="text-title-2">{title}</h2>
         </div>
 
         <span className="block h-px w-full bg-color-1 opacity-50" />

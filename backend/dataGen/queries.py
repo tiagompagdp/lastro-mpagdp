@@ -27,9 +27,10 @@ def detectContextualIntent(prompt):
             json={
                 'model': 'context-router-lastro',
                 'prompt': prompt,
-                'stream': False
+                'stream': False,
+                'keep_alive': -1
             },
-            timeout=10
+            timeout=30
         )
 
         if response.status_code == 200:
