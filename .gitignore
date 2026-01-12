@@ -83,6 +83,7 @@ web_modules/
 .DS_Store
 
 venv/
+env/
 __pycache__
 
 # parcel-bundler cache (https://parceljs.org/)

@@ -3,12 +3,7 @@ import logoSvg from "../assets/logo.svg";
 import lastroImg from "../assets/images/lastro.jpeg";
 import curaImg from "../assets/images/cura.jpg";
 
-interface ProjectBlockProps {
-  title: string;
-  projects: Projects;
-}
-
-const About: React.FC<ProjectBlockProps> = () => {
+const About: React.FC = () => {
   useContentReady(true);
 
   return (
@@ -107,7 +102,7 @@ const About: React.FC<ProjectBlockProps> = () => {
           </div>
         </div>
         <div className="flex flex-col order-1 md:order-2">
-          <div className="mb-24">
+          <div className="mb-12">
             <div
               className="sticky bg-color-bg z-10 pt-px pb-3"
               style={{ top: "var(--menu-height)" }}
