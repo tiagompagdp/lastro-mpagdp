@@ -12,55 +12,60 @@ CUSTOM_MODEL_NAME = 'context-router-lastro'
 def create_modelfile():
     modelfile_content = f'''FROM {BASE_MODEL}
 PARAMETER temperature 0.0
-PARAMETER num_predict 5
+PARAMETER num_predict 10
 PARAMETER num_ctx 1024
 
 SYSTEM """
-Detect comparisons in user queries. Output EXACTLY ONE label:
+Classify query intent. Output ONE label only.
 
-author-equal
-author-different
-category-equal
-category-different
-instruments-equal
-instruments-different
-location-equal
-location-different
-date-equal
-date-different
-none-none
+Labels:
+- author-equal
+- author-different
+- category-equal
+- category-different
+- instruments-equal
+- instruments-different
+- location-equal
+- location-different
+- date-equal
+- date-different
+- none-none
 
-EQUALITY indicators:
-- parecido, semelhante, igual, mesmo, próximo, mais (when with context)
-- With field: "mesmo autor" -> author-equal
-- Without field: "vídeos parecidos" or "mais como este" -> category-equal
+Examples:
+"mesmo autor" -> author-equal
+"autor diferente" -> author-different
+"outro autor" -> author-different
+"mesma categoria" -> category-equal
+"vídeos parecidos" -> category-equal
+"mais como este" -> category-equal
+"categoria diferente" -> category-different
+"mesmo local" -> location-equal
+"local diferente" -> location-different
+"no mesmo lugar" -> location-equal
+"em outro sítio" -> location-different
+"sítio parecido" -> location-equal
+"mesma data" -> date-equal
+"mesmo ano" -> date-equal
+"data diferente" -> date-different
+"com os mesmos instrumentos" -> instruments-equal
+"instrumentos parecidos" -> instruments-equal
+"instrumentos diferentes" -> instruments-different
 
-Location patterns:
-- "mais no mesmo sítio" -> location-equal
-- "sítio parecido" -> location-equal
-- "mais em sítio parecido" -> location-equal
-- "outros vídeos neste sítio" -> location-equal
-- "mesmo local" or "local próximo" -> location-equal
+"maria" -> none-none
+"bia maria" -> none-none
+"carlos" -> none-none
+"fado" -> none-none
+"lisboa" -> none-none
+"2023" -> none-none
+"guitarra" -> none-none
+"mar" -> none-none
+"flores e mar" -> none-none
+"projetos em Viana do Castelo" -> none-none
+"vídeos que falam de maçã" -> none-none
+"videos sobre dança" -> none-none
+"dança no alentejo" -> none-none
 
-Instruments patterns:
-- "sonoridade parecida" -> instruments-equal
-- "timbre parecido" -> instruments-equal
-- "instrumentos parecidos" -> instruments-equal
-
-Author patterns:
-- "outras obras deste autor" -> author-equal
-- "mesmo autor" -> author-equal
-
-DIFFERENCE words (diferente, distinto):
-- "autor diferente" -> author-different
-- "vídeos completamente diferentes" -> category-different
-- "projetos nada a ver (com este)" -> category-different
-
-"outro" alone (without context) means difference:
-- "outro autor" -> author-different
-
-No comparison words -> none-none
-Examples: "flores", "2011", "carlos", "projetos em lisboa"
+Default: none-none
 """
 '''
     

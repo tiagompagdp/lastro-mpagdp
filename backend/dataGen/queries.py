@@ -150,23 +150,39 @@ def stripQueries(text):
     }
 
     lines = text.strip().split('\n')
+    i = 0
 
-    for line in lines:
-        line = line.strip()
+    while i < len(lines):
+        line = lines[i].strip()
+
         if not line:
+            i += 1
             continue
 
         # isolate query
         if line.startswith('QUERY:'):
             query = line[6:].strip()
-            if not query.endswith(';'):
-                query += ';'
-            result["queries"].append(query)        
-        
+
+            # If query is empty or just whitespace, check the next line
+            if not query:
+                i += 1
+                if i < len(lines):
+                    next_line = lines[i].strip()
+                    # Make sure next line is actual SQL, not another tag
+                    if next_line and not next_line.startswith('DESC:') and not next_line.startswith('QUERY:'):
+                        query = next_line
+
+            if query:
+                if not query.endswith(';'):
+                    query += ';'
+                result["queries"].append(query)
+
         # isolate description
         elif line.startswith('DESC:'):
             result["descriptions"].append(line[5:].strip())
-        
+
+        i += 1
+
     return result
 
 # ==================================================

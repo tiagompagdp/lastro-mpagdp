@@ -58,6 +58,8 @@ RESET: <PROMPT>="gato" -> WHERE title LIKE '%gato%' OR author LIKE '%gato%'
        DESC: Gato no título ou autor
 RESET: <PROMPT>="carta de amor" -> WHERE title LIKE '%carta de amor%'
        DESC: Carta de amor no título
+RESET: <PROMPT>="mar" -> WHERE title LIKE '%mar%' OR location LIKE '%mar%'
+       DESC: Mar no título ou localização
 RESET: <PROMPT>="guitarra braguesa" -> WHERE instruments LIKE '%guitarra%' or instruments LIKE '%braguesa%'
        DESC: Guitarra ou braguesa nos instrumentos
 RESET: <PROMPT>="guitarra de fado" -> WHERE instruments LIKE '%guitarra%' or instruments LIKE '%fado%'

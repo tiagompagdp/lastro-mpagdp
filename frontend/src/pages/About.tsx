@@ -155,30 +155,17 @@ const About: React.FC = () => {
             </div>
             <div className="flex flex-col gap-3 pr-8">
               <p>
-                A Música Portuguesa a Gostar Dela Própria é um projeto de
-                arquivo vivo e celebração da identidade sonora de Portugal.
-                Desde 2011, percorre o país de norte a sul, ilhas incluídas,
-                registando — em vídeo, som e palavra — músicos, cantores,
-                poetas, tocadores e comunidades que mantêm viva a alma da música
-                portuguesa.
+                A Música Portuguesa a Gostar Dela Própria é uma associação
+                cultural que se dedica a documentar, valorizar e divulgar
+                processos e práticas musicais e ainda manifestações de cultura
+                popular. A sua missão passa por criar um espólio de tradição
+                oral e memória colectiva de Portugal no século XXI.
               </p>
               <p>
-                Mais do que um arquivo, é um retrato coletivo. Sem estúdios, sem
-                filtros e sem artifícios, cada gravação acontece no lugar de
-                origem — na aldeia, na rua, na cozinha, na serra ou à beira-mar
-                —, deixando que o som e o silêncio do espaço façam parte da
-                canção.
-              </p>
-              <p>
-                O projeto nasceu da vontade de Tiago Pereira de mostrar a força
-                da tradição e a sua constante reinvenção. O resultado é um
-                mosaico de vozes e expressões que atravessa géneros e gerações —
-                do fado à música popular, do canto alentejano à eletrónica, da
-                tradição oral à experimentação.
-              </p>
-              <p>
-                A Música Portuguesa a Gostar Dela Própria é, acima de tudo, um
-                gesto de escuta. Um país a ouvir-se a si próprio.
+                Neste processo, um dos seus objetivos principais consiste na
+                dignificação e enaltecimento da sabedoria dos mais velhos, tal
+                como as práticas ainda mantidas pelos mais novos e outras novas
+                que contribuam para a diversificação da cultura portuguesa.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-0 mt-8">
                 <a

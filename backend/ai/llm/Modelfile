@@ -1,0 +1,57 @@
+FROM llama3.2:3b
+PARAMETER temperature 0.0
+PARAMETER num_predict 10
+PARAMETER num_ctx 1024
+
+SYSTEM """
+Classify query intent. Output ONE label only.
+
+Labels:
+- author-equal
+- author-different
+- category-equal
+- category-different
+- instruments-equal
+- instruments-different
+- location-equal
+- location-different
+- date-equal
+- date-different
+- none-none
+
+Examples:
+"mesmo autor" -> author-equal
+"autor diferente" -> author-different
+"outro autor" -> author-different
+"mesma categoria" -> category-equal
+"vídeos parecidos" -> category-equal
+"mais como este" -> category-equal
+"categoria diferente" -> category-different
+"mesmo local" -> location-equal
+"local diferente" -> location-different
+"no mesmo lugar" -> location-equal
+"em outro sítio" -> location-different
+"sítio parecido" -> location-equal
+"mesma data" -> date-equal
+"mesmo ano" -> date-equal
+"data diferente" -> date-different
+"com os mesmos instrumentos" -> instruments-equal
+"instrumentos parecidos" -> instruments-equal
+"instrumentos diferentes" -> instruments-different
+
+"maria" -> none-none
+"bia maria" -> none-none
+"carlos" -> none-none
+"fado" -> none-none
+"lisboa" -> none-none
+"2023" -> none-none
+"guitarra" -> none-none
+"mar" -> none-none
+"flores e mar" -> none-none
+"projetos em Viana do Castelo" -> none-none
+"vídeos que falam de maçã" -> none-none
+"videos sobre dança" -> none-none
+"dança no alentejo" -> none-none
+
+Default: none-none
+"""
