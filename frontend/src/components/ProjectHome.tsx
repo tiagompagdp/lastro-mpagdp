@@ -52,7 +52,7 @@ export default function ProjectFooter({
   if (!videoId) return null;
 
   return (
-    <div className="relative h-[100vh] w-screen overflow-hidden left-1/2 -translate-x-1/2 mb-24 mt-[calc(var(--menu-height)*-1)]">
+    <div className="relative h-[100dvh] w-screen overflow-hidden left-1/2 -translate-x-1/2 mb-24 mt-[calc(var(--menu-height)*-1)]">
       <div
         className={`absolute inset-0 transition-opacity duration-[1000ms] ease-in-out ${
           videoStarted ? "opacity-50" : "opacity-0"
