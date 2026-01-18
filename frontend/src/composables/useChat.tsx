@@ -32,6 +32,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
 
   const clearMessages = () => {
     setMessages([]);
+    setMessageCounter(0);
   };
 
   return (

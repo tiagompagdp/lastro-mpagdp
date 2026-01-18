@@ -261,7 +261,7 @@ def handleQuery(data):
     modelOutput = queryLLM(currentPrompt, data["previousQueries"])
     print(modelOutput)
 
-    #interactionId = recordInteraction(data,modelOutput)
+    interactionId = recordInteraction(data,modelOutput)
 
     result = stripQueries(modelOutput)
     rawResults = executeQueriesSQL(result["queries"])

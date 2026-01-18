@@ -98,15 +98,7 @@ const Project: React.FC = () => {
         >
           <div className="flex gap-3 mb-3 items-start">
             <button
-              onClick={() => {
-                navigate("/explorar");
-                setTimeout(() => {
-                  window.scrollTo({
-                    top: document.documentElement.scrollHeight,
-                    behavior: "smooth",
-                  });
-                }, 500);
-              }}
+              onClick={() => navigate("/explorar")}
               className="text-2xl hover:opacity-70 transition-opacity cursor-pointer"
               aria-label="Go back"
             >

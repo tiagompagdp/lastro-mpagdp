@@ -53,6 +53,11 @@ const Explore: React.FC = () => {
   };
 
   useEffect(() => {
+    // Clear animation tracking when messages are cleared
+    if (messages.length === 0) {
+      animatedMessageIds.current.clear();
+    }
+
     const observer = new ResizeObserver((entries) => {
       entries.forEach((entry) => {
         const idx = parseInt(entry.target.getAttribute("data-idx") || "0");

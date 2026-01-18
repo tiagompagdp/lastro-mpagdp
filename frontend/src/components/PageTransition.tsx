@@ -28,10 +28,25 @@ export default function PageTransition() {
 
   const handleAnimationEnd = () => {
     if (transitionStage === "fadeOut") {
+      // Scroll to top for all pages except explorar (happens while page is faded out)
+      if (location.pathname !== "/explorar") {
+        window.scrollTo({
+          top: 0,
+          behavior: "instant",
+        });
+      }
+
       setDisplayLocation(location);
       displayOutletRef.current = currentOutlet;
-      //window.scrollTo(0, 0);
       setTransitionStage("waiting");
+    } else if (transitionStage === "fadeIn") {
+      // Scroll to bottom when navigating to explorar page (after fade in completes)
+      if (location.pathname === "/explorar") {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: "smooth",
+        });
+      }
     }
   };
 
