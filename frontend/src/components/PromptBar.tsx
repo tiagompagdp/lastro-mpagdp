@@ -26,7 +26,10 @@ const projectPlaceholders = [
   "Encontre publicações relacionadas...",
 ];
 
-const getRandomPlaceholder = (placeholders: string[], currentIndex: number): number => {
+const getRandomPlaceholder = (
+  placeholders: string[],
+  currentIndex: number,
+): number => {
   if (placeholders.length <= 1) return 0;
   let newIndex: number;
   do {
@@ -43,15 +46,18 @@ const PromptBar = () => {
   const [isFading, setIsFading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { messages, addMessage, clearMessages, isLoading, setIsLoading } = useChat();
+  const { messages, addMessage, clearMessages, isLoading, setIsLoading } =
+    useChat();
   const ip = usePublicIP(cookieAccepted);
 
   const isProjectPage = /^\/projetos\/\d+$/.test(location.pathname);
   const [activeArray, setActiveArray] = useState<"general" | "project">(
-    isProjectPage ? "project" : "general"
+    isProjectPage ? "project" : "general",
   );
-  const placeholders = activeArray === "project" ? projectPlaceholders : generalPlaceholders;
-  const currentPlaceholder = placeholders[placeholderIndex % placeholders.length];
+  const placeholders =
+    activeArray === "project" ? projectPlaceholders : generalPlaceholders;
+  const currentPlaceholder =
+    placeholders[placeholderIndex % placeholders.length];
 
   const historySize = 1;
 
@@ -66,7 +72,8 @@ const PromptBar = () => {
       setIsFading(true);
       const timeout = setTimeout(() => {
         setActiveArray(targetArray);
-        const newPlaceholders = targetArray === "project" ? projectPlaceholders : generalPlaceholders;
+        const newPlaceholders =
+          targetArray === "project" ? projectPlaceholders : generalPlaceholders;
         setPlaceholderIndex(Math.floor(Math.random() * newPlaceholders.length));
         setIsFading(false);
       }, 300);
@@ -168,68 +175,72 @@ const PromptBar = () => {
       />
       <div className="fixed bottom-0 left-0 w-full bg-color-bg border-t border-color-2/25 z-50">
         <div className="flex items-center h-full menu-footer-setup gap-2">
-        <div className="flex gap-2 w-full bg-color-2/5 rounded-full transition-all focus-within:ring-1 focus-within:ring-color-2/25">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={currentPlaceholder}
-            disabled={!ip || isLoading}
-            className={`flex-1 bg-transparent pl-6 text-color-1 text-body-1 focus:outline-none transition-all ${
-              isLoading ? "opacity-40" : "opacity-100"
-            }`}
-            style={{
-              ["--tw-placeholder-opacity" as string]: isFading ? "0" : "0.4",
-            }}
-          />
-          <style>{`
+          <div className="flex gap-2 w-full bg-color-2/10 rounded-full transition-all focus-within:ring-1 focus-within:ring-color-2/25">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={currentPlaceholder}
+              disabled={!ip || isLoading}
+              className={`flex-1 bg-transparent pl-6 text-color-1 text-body-1 focus:outline-none transition-all ${
+                isLoading ? "opacity-40" : "opacity-100"
+              }`}
+              style={{
+                ["--tw-placeholder-opacity" as string]: isFading ? "0" : "0.4",
+              }}
+            />
+            <style>{`
             input::placeholder {
               transition: opacity 0.3s ease-in-out;
               opacity: var(--tw-placeholder-opacity, 0.4);
             }
           `}</style>
-          <button
-            onClick={handleSend}
-            disabled={!ip || isLoading || !input.trim()}
-            className="text-color-1 pr-8 pl-4 rounded-lg hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity flex items-center justify-center w-12 h-12 relative cursor-pointer"
-          >
-            <svg
-              className={`animate-spin h-5 w-5 absolute transition-opacity duration-300 ${
-                isLoading ? "opacity-100 delay-150" : "opacity-0 delay-0"
-              }`}
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
+            <button
+              onClick={handleSend}
+              disabled={!ip || isLoading || !input.trim()}
+              className="text-color-1 pr-8 pl-4 rounded-lg hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity flex items-center justify-center w-12 h-12 relative cursor-pointer"
             >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="3"
-              ></circle>
-              <path
-                className="opacity-75"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-                d="M12 2a10 10 0 0 1 10 10"
-              ></path>
-            </svg>
-            <BiSearch
-              className={`h-6 w-6 absolute transition-opacity duration-300 ${
-                isLoading ? "opacity-0 delay-0" : "opacity-100 delay-150"
-              }`}
-            />
+              <svg
+                className={`animate-spin h-5 w-5 absolute transition-opacity duration-300 ${
+                  isLoading ? "opacity-100 delay-150" : "opacity-0 delay-0"
+                }`}
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  d="M12 2a10 10 0 0 1 10 10"
+                ></path>
+              </svg>
+              <BiSearch
+                className={`h-6 w-6 absolute transition-opacity duration-300 ${
+                  isLoading ? "opacity-0 delay-0" : "opacity-100 delay-150"
+                }`}
+              />
+            </button>
+          </div>
+          <button
+            onClick={handleNewChat}
+            disabled={isLoading}
+            className="text-white cursor-pointer flex items-center justify-center w-12 h-12 rounded-full bg-color-2/10 group disabled:cursor-not-allowed"
+          >
+            <AiOutlinePlus className="h-6 w-6 opacity-50 group-hover:opacity-100 group-disabled:opacity-40 group-disabled:hover:opacity-40 transition-opacity duration-300" />
           </button>
         </div>
-        <button onClick={handleNewChat} disabled={isLoading} className="text-white cursor-pointer flex items-center justify-center w-12 h-12 rounded-full bg-color-2/5 group disabled:cursor-not-allowed">
-          <AiOutlinePlus className="h-6 w-6 opacity-50 group-hover:opacity-100 group-disabled:opacity-40 group-disabled:hover:opacity-40 transition-opacity duration-300" />
-        </button>
       </div>
-    </div>
     </>
   );
 };
