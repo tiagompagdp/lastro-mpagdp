@@ -183,7 +183,7 @@ const Explore: React.FC = () => {
                           onClick={() =>
                             navigate(`/projetos/${msg.contextProject!.id}`)
                           }
-                          className="text-note-2 text-color-1 opacity-35 hover:opacity-100 transition-all duration-250 cursor-pointer"
+                          className="text-note-2 text-color-1 opacity-35 hover:opacity-100 transition-all duration-250 cursor-pointer text-left"
                         >
                           [a partir de {msg.contextProject.title} —{" "}
                           {msg.contextProject.author}]
