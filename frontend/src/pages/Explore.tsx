@@ -23,7 +23,7 @@ const Explore: React.FC = () => {
 
   useContentReady(true);
   const [headerHeights, setHeaderHeights] = useState<Record<number, number>>(
-    {}
+    {},
   );
   const headerRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const searchResultRefs = useRef<Record<number, HTMLDivElement | null>>({});
@@ -172,29 +172,28 @@ const Explore: React.FC = () => {
                   data-search-header
                   className="sticky top-[var(--menu-height)] bg-color-bg z-10 py-3"
                 >
-                  <div className="opacity-50">
+                  <div>
                     <p className="text-note-3 uppercase">
-                      pesquisa #{(msg.id ?? idx) + 1}
+                      <span className="opacity-50">
+                        pesquisa #{(msg.id ?? idx) + 1}
+                        {msg.contextProject && <> — </>}
+                      </span>
                       {msg.contextProject && (
-                        <span>
-                          {" "}
-                          —{" "}
-                          <button
-                            onClick={() =>
-                              navigate(`/projetos/${msg.contextProject!.id}`)
-                            }
-                            className="text-note-2 text-color-2 hover:text-color-1 transition-colors group"
-                          >
-                            <span className="opacity-60 group-hover:opacity-100 transition-opacity duration-250 cursor-pointer">
-                              [a partir de {msg.contextProject.title} —{" "}
-                              {msg.contextProject.author}]
-                            </span>
-                          </button>
-                        </span>
+                        <button
+                          onClick={() =>
+                            navigate(`/projetos/${msg.contextProject!.id}`)
+                          }
+                          className="text-note-2 text-color-1 opacity-35 hover:opacity-100 transition-all duration-250 cursor-pointer"
+                        >
+                          [a partir de {msg.contextProject.title} —{" "}
+                          {msg.contextProject.author}]
+                        </button>
                       )}
                     </p>
-                    <h2 className="text-body-1 mt-0.5">{msg.prompt}</h2>
-                    <span className="block h-px w-full bg-color-1 opacity-50 mt-2" />
+                    <h2 className="text-body-1 mt-0.5 opacity-55">
+                      {msg.prompt}
+                    </h2>
+                    <span className="block h-px w-full bg-color-1 opacity-60 mt-2" />
                   </div>
                 </div>
 

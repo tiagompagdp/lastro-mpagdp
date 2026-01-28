@@ -67,7 +67,7 @@ const Project: React.FC = () => {
       suggestionsRef.current
     ) {
       const blocks = suggestionsRef.current.querySelectorAll(
-        "[data-project-block]"
+        "[data-project-block]",
       );
       if (blocks.length === 0) return;
 
@@ -108,7 +108,7 @@ const Project: React.FC = () => {
               <h1 className="text-title-2">
                 {project.title == "" ? "Sem título registado" : project.title}
               </h1>
-              <p className="text-note-1 opacity-50">
+              <p className="text-note-1 opacity-55">
                 {project.author == "" ? "Sem autor registado" : project.author}
               </p>
             </div>

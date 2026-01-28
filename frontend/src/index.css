@@ -62,7 +62,7 @@ body {
 @font-face {
   font-family: "Geist";
   src: url("/fonts/Geist-Thin.woff2") format("woff2");
-  font-weight: 100;
+  font-weight: 200;
   font-style: normal;
 }
 
@@ -83,7 +83,7 @@ body {
 @font-face {
   font-family: "GeistMono";
   src: url("/fonts/GeistMono-Thin.woff2") format("woff2");
-  font-weight: 100;
+  font-weight: 200;
   font-style: normal;
 }
 
@@ -182,7 +182,7 @@ body {
 
 @utility text-note-3 {
   font-family: "GeistMono", ui-monospace, monospace;
-  font-weight: 400;
+  font-weight: 200;
   font-size: 0.625rem; /* 10px */
   line-height: 1;
 }
@@ -248,7 +248,8 @@ body {
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {

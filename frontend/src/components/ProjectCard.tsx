@@ -48,17 +48,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         />
       </div>
 
-      {/* Text content */}
       <div className="relative z-10">
         <h3 className="text-body-1 group-hover:underline transition-all duration-300">
           {project.title || "Sem título registado"}
         </h3>
 
-        <p className="text-note-2 pt-0.5 opacity-50 group-hover:underline transition-all duration-300">
+        <p className="text-note-2 pt-0.5 opacity-60 group-hover:underline transition-all duration-300">
           {project.author || "Sem autor registado"}
         </p>
 
-        <p className="text-note-3 pt-2 opacity-35">
+        <p className="text-note-3 pt-2 opacity-45">
           {project.category || "Sem categoria registada"}
         </p>
       </div>

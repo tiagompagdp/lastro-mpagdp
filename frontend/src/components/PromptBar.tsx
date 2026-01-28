@@ -190,7 +190,7 @@ const PromptBar = () => {
       />
       <div className="fixed bottom-0 left-0 w-full bg-color-bg border-t border-color-2/25 z-50">
         <div className="flex items-center h-full menu-footer-setup gap-2">
-          <div className="flex gap-2 w-full bg-color-2/10 rounded-full transition-all focus-within:ring-1 focus-within:ring-color-2/25">
+          <div className="flex gap-2 w-full bg-color-2/8 rounded-full transition-all focus-within:ring-1 focus-within:ring-color-2/25">
             <input
               type="text"
               value={input}
@@ -202,19 +202,19 @@ const PromptBar = () => {
                 isLoading ? "opacity-40" : "opacity-100"
               }`}
               style={{
-                ["--tw-placeholder-opacity" as string]: isFading ? "0" : "0.4",
+                ["--tw-placeholder-opacity" as string]: isFading ? "0" : "0.7",
               }}
             />
             <style>{`
             input::placeholder {
               transition: opacity 0.3s ease-in-out;
-              opacity: var(--tw-placeholder-opacity, 0.4);
+              opacity: var(--tw-placeholder-opacity);
             }
           `}</style>
             <button
               onClick={handleSend}
               disabled={!ip || isLoading || !input.trim()}
-              className="text-color-1 pr-8 pl-4 rounded-lg hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity flex items-center justify-center w-12 h-12 relative cursor-pointer"
+              className="text-color-1 pr-8 pl-4 rounded-lg hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity flex items-center justify-center w-12 h-12 relative cursor-pointer"
             >
               <svg
                 className={`animate-spin h-5 w-5 absolute transition-opacity duration-300 ${
@@ -250,7 +250,7 @@ const PromptBar = () => {
           <button
             onClick={handleNewChat}
             disabled={isLoading}
-            className="text-white cursor-pointer flex items-center justify-center w-12 h-12 rounded-full bg-color-2/10 group disabled:cursor-not-allowed"
+            className="text-white cursor-pointer flex items-center justify-center w-12 h-12 rounded-full bg-color-2/8 group disabled:cursor-not-allowed"
           >
             <AiOutlinePlus className="h-6 w-6 opacity-50 group-hover:opacity-100 group-disabled:opacity-40 group-disabled:hover:opacity-40 transition-opacity duration-300" />
           </button>
