@@ -11,19 +11,41 @@ import ClearHistoryPopup from "./ClearHistoryPopup";
 
 const generalPlaceholders = [
   "Procure qualquer coisa...",
-  "Descubra projetos de investigação...",
-  "Explore temas científicos...",
-  "Encontre publicações recentes...",
-  "Pesquise por área de estudo...",
-  "Procure investigadores...",
+  "Mostra-me um rapper de Trás-os-Montes",
+  "Voz como instrumento principal",
+  "Música feita com sintetizadores",
+  "Criação de som com ferramentas",
+  "Encontra poetas populares a falar sobre a morte",
+  "Viola braguesa no norte de Portugal",
+  "Música tocada com adufe em Lisboa",
+  "Instrumento adufe na Beira Baixa",
+  "Grupo infantil a cantar cante alentejano",
+  "Receitas tradicionais de Trás-os-Montes",
+  "Encontra um poeta do Baixo Alentejo",
+  "Religião na Beira Litoral",
+  "Grupo feminino a cantar uma música de trabalho com polifonia",
+  "Cover instrumental de música do Zeca Afonso",
+  "Fado na Beira Baixa",
+  "Danças da comunidade cigana",
+  "Encontra entrevista a construtor de instrumentos tradicionais",
+  "Tuna universitária música tradicional portuguesa",
+  "Músicas e danças da Ilha de São Miguel",
+  "Vídeos sobre o 25 de abril",
+  "Mostra-me o projeto mais antigo da base de dados",
+  "Encontra vídeos gravados no Festival Bons Sons",
 ];
 
 const projectPlaceholders = [
-  "Pergunte sobre este projeto...",
-  "Descubra mais detalhes...",
-  "Explore os resultados...",
-  "Pesquise informações específicas...",
-  "Encontre publicações relacionadas...",
+  "Do mesmo autor",
+  "Projeto de categoria similar",
+  "Vídeos parecidos com este",
+  "Mais vídeos como este",
+  "Mesmo local de gravação",
+  "Num sítio diferente",
+  "Outros projetos gravados no mesmo ano",
+  "Outros vídeos com os mesmos instrumentos",
+  "Vídeos com instrumentos parecidos",
+  "Projetos com temas distintos",
 ];
 
 const getRandomPlaceholder = (
@@ -95,10 +117,7 @@ const PromptBar = () => {
   }, [placeholders]);
 
   useEffect(() => {
-    // Close popup when navigating away from explorar page
-    if (location.pathname !== "/explorar") {
-      setShowClearPopup(false);
-    }
+    if (location.pathname !== "/explorar") setShowClearPopup(false);
   }, [location.pathname]);
 
   const handleSend = async () => {
@@ -106,7 +125,6 @@ const PromptBar = () => {
 
     const prompt = input.trim();
 
-    // Extract project ID from path like /projetos/1434903174
     const projectMatch = location.pathname.match(/^\/projetos\/(\d+)$/);
     const currentProjectId = projectMatch ? projectMatch[1] : undefined;
 
@@ -151,10 +169,7 @@ const PromptBar = () => {
 
   const handleNewChat = () => {
     navigate("/explorar");
-    // Only show popup if there's history to clear
-    if (messages.length >= 1) {
-      setShowClearPopup(true);
-    }
+    if (messages.length >= 1) setShowClearPopup(true);
   };
 
   const handleConfirmClear = () => {

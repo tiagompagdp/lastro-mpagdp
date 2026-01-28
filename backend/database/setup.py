@@ -89,3 +89,19 @@ def recordInteraction(data,result):
         db.session.commit()
 
         return newInteraction.id
+
+def cleanInteractions():
+    from database.models import Interaction
+    
+    count = Interaction.query.count()
+    
+    if count == 0:
+        return {"status": "success", "message": "No interactions to delete. Database is already clean.", "deleted": 0}
+
+    try:
+        Interaction.query.delete()
+        db.session.commit()
+        return {"status": "success", "message": "All interactions deleted successfully", "deleted": count}
+    except Exception as e:
+        db.session.rollback()
+        return {"status": "error", "message": f"Error deleting interactions: {e}", "deleted": 0}

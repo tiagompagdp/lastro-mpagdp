@@ -24,7 +24,31 @@ GOOGLE_SHEETS_URL = os.getenv("GOOGLE_SHEETS_URL")
 # auxiliar methods
 # ==================================================
 
-def normalizeString(string):
+def capitalize_portuguese_phrase(phrase):
+    """
+    Capitalize a Portuguese phrase, handling hyphenated words correctly.
+    Each word is capitalized, but for hyphenated words like 'Sacro-profana', 
+    only the first part before the hyphen is capitalized.
+    """
+    if not phrase:
+        return phrase
+    
+    # Split by spaces to handle multi-word phrases
+    words = phrase.split(' ')
+    capitalized_words = []
+    
+    for word in words:
+        # For hyphenated words, capitalize only the first part
+        if '-' in word:
+            parts = word.split('-')
+            capitalized_word = parts[0].capitalize() + '-' + '-'.join(p.lower() for p in parts[1:])
+            capitalized_words.append(capitalized_word)
+        else:
+            capitalized_words.append(word.capitalize())
+    
+    return ' '.join(capitalized_words)
+
+def normalizeString(string, capitalize_keywords=False):
     if not isinstance(string, str):
         return ''
     
@@ -39,7 +63,19 @@ def normalizeString(string):
     
     parts = [part.strip() for part in string.split(',') if part.strip()]
     
-    unique_parts = list(dict.fromkeys(parts))
+    # Case-insensitive deduplication, handling hyphens/spaces as equivalent
+    seen = {}
+    unique_parts = []
+    for part in parts:
+        # Normalize for comparison: convert hyphens to spaces and lowercase for case-insensitive comparison
+        normalized = part.replace('-', ' ').lower()
+        if normalized not in seen:
+            seen[normalized] = True
+            # Apply Portuguese-aware capitalization only if capitalize_keywords is True
+            if capitalize_keywords:
+                unique_parts.append(capitalize_portuguese_phrase(part))
+            else:
+                unique_parts.append(part)
     
     return ', '.join(unique_parts)
 
@@ -93,7 +129,7 @@ def insertProject(pid, p, cleanedLink, lineIndex, reporter):
 
         instruments = normalizeString(p['Instrumentos']),
         
-        keywords = normalizeString(concatStrings([p['Palavras Chave'],p['Conceitos-chave']])),
+        keywords = normalizeString(concatStrings([p['Palavras Chave'],p['Conceitos-chave']]), capitalize_keywords=True),
         infoPool = concatStrings([p['História (textos que acompanham vídeos)'],p['Outras Informações'],p['Biografias']])
     )
 
@@ -125,7 +161,7 @@ def updateProject(existingProject, p, lineIndex, cleanedLink, reporter):
         
         ('instruments', normalizeString(p['Instrumentos'])),
         
-        ('keywords', normalizeString(concatStrings([p['Palavras Chave'],p['Conceitos-chave']]))),
+        ('keywords', normalizeString(concatStrings([p['Palavras Chave'],p['Conceitos-chave']]), capitalize_keywords=True)),
         ('infoPool', concatStrings([p['História (textos que acompanham vídeos)'],p['Outras Informações'],p['Biografias']]))
     ]
 

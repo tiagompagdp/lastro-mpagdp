@@ -9,7 +9,7 @@ import json
 from dataGen.queries import handleQuery
 from dataGen.suggestions import getSuggestions
 
-from database.setup import initDatabase
+from database.setup import initDatabase, cleanInteractions
 from database.fetchData import fetchCSV
 from database.models import Project, Interaction
 
@@ -65,6 +65,11 @@ def get_user_activity():
     data = [interaction.serialize() for interaction in Interaction.query.all()]
     json_str = json.dumps(data, ensure_ascii=False, indent=2)
     return Response(json_str, mimetype='application/json; charset=utf-8')
+
+@app.route('/clean-interactions', methods=['POST', 'GET'])
+@limiter.limit("20 per minute")
+def clean_interactions():
+    return jsonify(cleanInteractions())
 
 @app.route('/')
 def home():

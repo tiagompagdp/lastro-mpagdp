@@ -8,6 +8,8 @@ from database.models import serializeProjectMinimal
 from dataGen.descriptions import describeDirectSuggestion, describeDisruptiveSuggestion
 import random
 import asyncio
+import re
+import unicodedata
 
 # ignore when splitting by space
 wordsToIgnore = [
@@ -47,7 +49,7 @@ wordsToIgnore = [
 # 3 direct suggestions, different probabilities
 nDirect = 3
 directOptions = [
-    {"field": "title", "p": 80},
+    # {"field": "title", "p": 80},
     {"field": "author", "p": 90},
     {"field": "category", "p": 75},
     {"field": "date", "p": 90},
@@ -97,6 +99,107 @@ def hasFieldData(field, project):
         return False
     return True
 
+def isSimilarTitle(title1, title2, threshold=0.60):
+    """
+    Check if two titles are similar (part of the same series) using accent normalization.
+    Matches titles that have the same base (ignoring accents, trailing numbers, and variant markers).
+    
+    Examples:
+    - "improvisação 1" and "improvisação 2" → same base (improvisação)
+    - "Improvisão" and "Improvisação" → same when normalized
+    - "Apita o Comboio" and "Apita o Comboio (version 2)" → same base
+    - "Oh Nita" parte 1 and "Oh Nita", parte 2 → same base
+    """
+    if not title1 or not title2:
+        return False
+    
+    def normalize_text(text):
+        """Remove accents, quotes, punctuation, trailing numbers/variants, and convert to lowercase"""
+        # Remove all types of quotes (regular, smart quotes, etc.)
+        text = re.sub(r'["\'""\']', '', text)
+        
+        # Remove common punctuation (except spaces needed for word separation)
+        # Added # to the list of punctuation to remove
+        text = re.sub(r'[,\.;:\!\?—–\-#]', ' ', text)
+        
+        # Decompose accented characters
+        nfd = unicodedata.normalize('NFD', text)
+        # Remove diacritical marks
+        text = ''.join(char for char in nfd if unicodedata.category(char) != 'Mn').lower()
+        
+        # Remove trailing numbers, parentheses, and common variant markers
+        # e.g., "improvisacao 1" → "improvisacao", "video (version 2)" → "video"
+        text = re.sub(r'\s*[\(\[].*[\)\]].*$', '', text)  # Remove (variant) or [variant]
+        text = re.sub(r'\s+\d+$', '', text)  # Remove trailing arabic numbers with space
+        text = re.sub(r'\s+[ivxlcdm]+$', '', text)  # Remove trailing roman numerals (i, ii, iii, iv, v, etc.)
+        text = re.sub(r'\s*-\s*\d+$', '', text)  # Remove " - 1" style
+        text = re.sub(r'\s*-\s*[ivxlcdm]+$', '', text)  # Remove " - i" style
+        text = re.sub(r'\s*v\d+$', '', text)  # Remove " v2" style
+        text = re.sub(r'\s+', ' ', text)  # Normalize whitespace
+        
+        # Normalize plural forms in Portuguese
+        # Handle common Portuguese plural patterns to match singular/plural
+        # Examples: modas → moda, lengalengas → lengalenga, canções → cancao
+        words = text.split()
+        normalized_words = []
+        for word in words:
+            # Remove trailing 's' for common plural forms (most Portuguese plurals)
+            if len(word) > 3 and word.endswith('s'):
+                # Common Portuguese plural patterns
+                if word.endswith('ões'):  # canções → cancao (need to also handle ã → a)
+                    singular = word[:-3] + 'ao'
+                elif word.endswith('ães'):  # pães → pao
+                    singular = word[:-3] + 'ao'
+                elif word.endswith('ais'):  # animais → animal
+                    singular = word[:-3] + 'al'
+                elif word.endswith('eis'):  # papéis → papel
+                    singular = word[:-3] + 'el'
+                elif word.endswith('is'):  # barris → barril
+                    singular = word[:-2] + 'l'
+                elif word.endswith('ns'):  # jardins → jardim
+                    singular = word[:-2] + 'm'
+                else:
+                    # Simple plural: just remove 's'
+                    singular = word[:-1]
+                normalized_words.append(singular)
+            else:
+                normalized_words.append(word)
+        
+        return ' '.join(normalized_words).strip()
+    
+    title1_normalized = normalize_text(title1.strip())
+    title2_normalized = normalize_text(title2.strip())
+    
+    return title1_normalized == title2_normalized
+
+def filterRelatedTitles(projects, current_project_id):
+    """
+    Filter out projects with similar titles (series/continuations).
+    Keeps the first one in each series.
+    """
+    if not projects:
+        return projects
+    
+    filtered = []
+    seen_base_titles = set()
+    
+    for project in projects:
+        # Skip the current project
+        if project.id == current_project_id:
+            continue
+        
+        # Check if this is a related title to any we've already added
+        is_related = False
+        for filtered_project in filtered:
+            if isSimilarTitle(project.title, filtered_project.title):
+                is_related = True
+                break
+        
+        if not is_related:
+            filtered.append(project)
+    
+    return filtered
+
 async def buildQueryAndExecute(field, project):
 
     value = getattr(project, field, None)
@@ -124,12 +227,23 @@ async def buildQueryAndExecute(field, project):
     if ", " in value_str:
         # Split by ", " and create OR conditions
         elements = [elem.strip() for elem in value_str.split(", ")]
-        conditions = [f"{field} LIKE '%{elem}%'" for elem in elements if elem]
-        where_clause = " OR ".join(conditions)
-        query = f"SELECT * FROM projects WHERE ({where_clause}){exclude_clause}"
-        #print(f"[Query - comma split] {query}")
-        results = await asyncio.to_thread(executeQueriesSQL, [query])
-        return query, (results[0] if results else None)
+        # Filter out insignificant elements (too short or in ignore list)
+        significant_elements = [
+            elem for elem in elements 
+            if elem and len(elem) > 2 and elem.lower() not in wordsToIgnore
+        ]
+        if significant_elements:
+            conditions = [f"{field} LIKE '%{elem}%'" for elem in significant_elements]
+            where_clause = " OR ".join(conditions)
+            query = f"SELECT * FROM projects WHERE ({where_clause}){exclude_clause}"
+            #print(f"[Query - comma split] {query}")
+            results = await asyncio.to_thread(executeQueriesSQL, [query])
+            return query, (results[0] if results else None)
+        else:
+            # Fallback to original exact match if all elements filtered out
+            query_exact = f"SELECT * FROM projects WHERE {field} LIKE '%{value_str}%'{exclude_clause}"
+            results = await asyncio.to_thread(executeQueriesSQL, [query_exact])
+            return query_exact, (results[0] if results else None)
     else:
         # Try exact match first
         query_exact = f"SELECT * FROM projects WHERE {field} LIKE '%{value_str}%'{exclude_clause}"
@@ -143,9 +257,12 @@ async def buildQueryAndExecute(field, project):
             return query_exact, results[0]
         else:
             #print(f"[Query - exact match FAILED] No results, trying word split...")
-            # Split by space and filter out insignificant words
+            # Split by space and filter out insignificant words (short or in ignore list)
             words = [word.strip() for word in value_str.split(" ")]
-            coreWords = [word for word in words if word.lower() not in wordsToIgnore and word]
+            coreWords = [
+                word for word in words 
+                if word and len(word) > 2 and word.lower() not in wordsToIgnore
+            ]
 
             if coreWords:
                 conditions = [f"{field} LIKE '%{word}%'" for word in coreWords]
@@ -325,6 +442,88 @@ async def getDisruptive(project):
 
     return selected
 
+def describeSimilarTitles():
+    """
+    Generate varied descriptions for similar titles suggestions.
+    """
+    descriptions = [
+        "Semelhança no título",
+        "Títulos relacionados",
+        "Nome parecido",
+    ]
+    return random.choice(descriptions)
+
+async def getSimilarTitles(project):
+    """
+    Find projects with similar titles (series/continuations).
+    Returns them as a single suggestion block.
+    """
+    if not project.title:
+        return None
+    
+    # Remove all types of quotes from title before splitting
+    title_cleaned = re.sub(r'["\'""\']', '', project.title)
+    
+    # Extract significant words from title
+    # Include Roman numerals (I, II, III, IV, V, VI, VII, VIII, IX, X) and regular numbers
+    def is_significant_word(word):
+        if len(word) > 2:
+            return True
+        # Keep Roman numerals (common in Portuguese titles)
+        if re.match(r'^[IVXLCDM]+$', word.upper()):
+            return True
+        # Keep single/double digit numbers
+        if word.isdigit():
+            return True
+        return False
+    
+    words = [w for w in title_cleaned.split() if is_significant_word(w)]
+    
+    if not words:
+        return None
+    
+    # Build SQL query with LIKE conditions for each word
+    # For each word, search for both the word itself AND its singular/plural variant
+    conditions = []
+    for word in words:
+        # Always add the original word
+        conditions.append(f"title LIKE '%{word}%'")
+        
+        # Add plural/singular variant if word is likely a noun
+        word_lower = word.lower()
+        if len(word_lower) > 3:
+            # If ends in 's', also search for singular (remove 's')
+            if word_lower.endswith('s') and len(word_lower) > 4:
+                singular = word[:-1]  # Keep original case
+                conditions.append(f"title LIKE '%{singular}%'")
+            # If doesn't end in 's', also search for plural (add 's')
+            elif not word_lower.endswith('s'):
+                plural = word + 's'
+                conditions.append(f"title LIKE '%{plural}%'")
+    
+    where_clause = " OR ".join(conditions)
+    query = f"SELECT * FROM projects WHERE ({where_clause}) AND id != {project.id}"
+    
+    results = await asyncio.to_thread(executeQueriesSQL, [query])
+    
+    if not results or not results[0]:
+        return None
+    
+    # Apply similarity matching only on filtered candidates
+    similar_projects = []
+    for p in results[0]:
+        title = p.title if hasattr(p, 'title') else p.get("title", "")
+        if isSimilarTitle(project.title, title):
+            similar_projects.append(p)
+    
+    if not similar_projects:
+        return None
+    
+    return {
+        "description": describeSimilarTitles(),
+        "projects": [serializeProjectMinimal(p) for p in similar_projects]
+    }
+
 # ==================================================
 # main
 # ==================================================
@@ -336,21 +535,33 @@ def getSuggestions(project):
 
 async def _getSuggestionsAsync(project):
 
-    # Get 3 direct and 2 disruptive suggestions concurrently
-    direct, disruptive = await asyncio.gather(
+    # Get 3 direct, 2 disruptive, and similar titles suggestions concurrently
+    direct, disruptive, similar_titles = await asyncio.gather(
         getDirect(project),
-        getDisruptive(project)
+        getDisruptive(project),
+        getSimilarTitles(project)
     )
 
-    # Combine results
-    result = direct + disruptive
+    # Combine results - similar titles always first
+    result = []
+    
+    # Add similar titles if found (always first)
+    if similar_titles:
+        result.append(similar_titles)
+    
+    # Add direct and disruptive suggestions
+    result.extend(direct)
+    result.extend(disruptive)
 
     # Shuffle projects within each suggestion
     for suggestion in result:
         random.shuffle(suggestion["projects"])
 
-    # Shuffle the suggestions themselves
-    random.shuffle(result)
-    #result.sort(key=lambda x: len(x["projects"]), reverse=True)
+    # Shuffle only the direct and disruptive suggestions (keep similar titles first)
+    if similar_titles and len(result) > 1:
+        # Shuffle everything after the first element
+        other_suggestions = result[1:]
+        random.shuffle(other_suggestions)
+        result = result[:1] + other_suggestions
 
     return result

@@ -120,18 +120,23 @@ const About: React.FC = () => {
             </div>
             <div className="flex flex-col gap-3 pr-8">
               <p>
-                Uma nova forma de explorar música, tradição oral, memória
-                coletiva e património humano.
+                Lastro propõe uma nova forma de explorar música, tradição oral,
+                memória coletiva e património humano.
               </p>
               <p>
                 A plataforma permite uma exploração interativa do acervo d'A
                 Música Portuguesa A Gostar Dela Própria. O resultado de anos de
-                recolha alimenta um motor de busca capaz de compreender
+                gravações de música, tradição oral, gastronomia e memória
+                colectiva alimenta um motor de busca capaz de compreender
                 linguagem natural, ajudando a encontrar não só o que procuramos,
-                mas também o que ainda não sabemos que queremos ver. A
-                ferramenta promete uma experiência acessível e completa,
-                minimizando a sensação de que algo ficou por descobrir — simples
-                como conversar com um amigo.
+                mas também o que pode surgir aleatoriamente durante a procura,
+                podendo às vezes a experiência ser muito normativa ou bastante
+                disruptiva.
+              </p>
+              <p>
+                O mais importante é que finalmente o projeto tem um lugar onde
+                de facto se podem encontrar todos os vídeos que gravou e os que
+                continua a gravar.
               </p>
             </div>
           </div>

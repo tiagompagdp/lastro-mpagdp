@@ -28,7 +28,7 @@ const ProjectBlock: React.FC<ProjectBlockProps> = ({
   const handleShowMore = () => {
     const newVisible = Math.min(
       visibleCount + CARDS_PER_CHUNK,
-      projects.length
+      projects.length,
     );
     setVisibleCount(newVisible);
   };
@@ -45,7 +45,7 @@ const ProjectBlock: React.FC<ProjectBlockProps> = ({
 
     for (let i = startRowIndex; i < endRowIndex; i++) {
       const row = blockRef.current.querySelector(
-        `[data-row-index="${i}"]`
+        `[data-row-index="${i}"]`,
       ) as HTMLElement;
       if (row) newRows.push(row);
     }
@@ -80,7 +80,7 @@ const ProjectBlock: React.FC<ProjectBlockProps> = ({
           <h2 className="text-title-2">{title}</h2>
           <button
             onClick={handleToggle}
-            className="text-xl hover:opacity-70 transition-opacity mt-[2px] cursor-pointer"
+            className="text-xl hover:opacity-70 transition-opacity cursor-pointer"
             aria-label={isCollapsed ? "Expand section" : "Collapse section"}
           >
             <SlArrowLeft
@@ -125,7 +125,7 @@ const ProjectBlock: React.FC<ProjectBlockProps> = ({
                     ))}
                   </div>
                 );
-              }
+              },
             )}
 
             {hasMore && (

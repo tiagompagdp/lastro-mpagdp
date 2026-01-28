@@ -135,7 +135,7 @@ def buildSingleTermFallback(term, dateFilter=None):
         # Build description based on column
         columnDescriptions = {
             'title': f"Projetos com '{term}' no título",
-            'author': f"Projetos de autores relacionados a '{term}'",
+            'author': f"Projetos de autores relacionados com '{term}'",
             'category': f"Projetos do género '{term}'",
             'direction': f"Projetos com direção de '{term}'",
             'sound': f"Projetos com som de '{term}'",
@@ -143,7 +143,7 @@ def buildSingleTermFallback(term, dateFilter=None):
             'support': f"Projetos com apoio de '{term}'",
             'assistance': f"Projetos com assistência de '{term}'",
             'research': f"Projetos com pesquisa de '{term}'",
-            'location': f"Projetos em localizações relacionadas a '{term}'",
+            'location': f"Projetos em localizações relacionadas com '{term}'",
             'instruments': f"Projetos com instrumentos '{term}'"
         }
 
@@ -175,7 +175,7 @@ def buildKeywordsFallback(term, dateFilter=None):
 
     return {
         'query': query,
-        'description': f"Outros projetos relacionados a '{term}'",
+        'description': f"Outros projetos relacionados com '{term}'",
         'column': 'keywords'
     }
 
@@ -205,7 +205,7 @@ def buildMultiTermFallback(terms, dateFilter=None):
     termsStr = "', '".join(terms)
     return {
         'query': query,
-        'description': f"Projetos relacionados a '{termsStr}'",
+        'description': f"Projetos relacionados com '{termsStr}'",
         'column': 'keywords'
     }
 
@@ -246,7 +246,7 @@ def buildSplitWordsFallback(term, dateFilter=None, maxWords=5):
     wordsStr = "', '".join(words)
     return {
         'query': query,
-        'description': f"Projetos relacionados a '{wordsStr}'",
+        'description': f"Projetos relacionados com '{wordsStr}'",
         'column': 'keywords_split',
         'words': words
     }

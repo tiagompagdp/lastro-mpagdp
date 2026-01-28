@@ -4,10 +4,51 @@ interface VideoSectionProps {
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
   return `${day}-${month}-${year}`;
+}
+
+function normalizeForComparison(text: string): string {
+  /**
+   * Normalize text by removing accents and converting to lowercase
+   * Allows "Castilla y Leon" to match "Castilla Y Léon"
+   */
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Remove diacritical marks
+    .toLowerCase()
+    .replace(/\s+/g, " ") // Normalize all whitespace to single space
+    .trim();
+}
+
+function filterKeywords(
+  keywords: string,
+  location: string,
+  author: string,
+): string {
+  if (!keywords) return "";
+
+  const excludeTerms = new Set<string>();
+
+  if (location) {
+    location
+      .split(",")
+      .forEach((term) => excludeTerms.add(normalizeForComparison(term.trim())));
+  }
+
+  if (author) {
+    author
+      .split(",")
+      .forEach((term) => excludeTerms.add(normalizeForComparison(term.trim())));
+  }
+
+  return keywords
+    .split(",")
+    .map((keyword) => keyword.trim())
+    .filter((keyword) => !excludeTerms.has(normalizeForComparison(keyword)))
+    .join(", ");
 }
 
 export default function VideoSection({ project }: VideoSectionProps) {
@@ -60,7 +101,13 @@ export default function VideoSection({ project }: VideoSectionProps) {
               <p className="text-note-3 uppercase opacity-50 mb-1">
                 Palavras-chave
               </p>
-              <p className="text-body-1">{project.keywords}</p>
+              <p className="text-body-1">
+                {filterKeywords(
+                  project.keywords,
+                  project.location,
+                  project.author,
+                )}
+              </p>
             </div>
           )}
         </div>
