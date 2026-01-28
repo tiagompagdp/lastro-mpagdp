@@ -11,41 +11,41 @@ import ClearHistoryPopup from "./ClearHistoryPopup";
 
 const generalPlaceholders = [
   "Procure qualquer coisa...",
-  "Mostra-me um rapper de Trás-os-Montes",
-  "Voz como instrumento principal",
-  "Música feita com sintetizadores",
-  "Criação de som com ferramentas",
-  "Encontra poetas populares a falar sobre a morte",
-  "Viola braguesa no norte de Portugal",
-  "Música tocada com adufe em Lisboa",
-  "Instrumento adufe na Beira Baixa",
-  "Grupo infantil a cantar cante alentejano",
-  "Receitas tradicionais de Trás-os-Montes",
-  "Encontra um poeta do Baixo Alentejo",
-  "Religião na Beira Litoral",
-  "Grupo feminino a cantar uma música de trabalho com polifonia",
-  "Cover instrumental de música do Zeca Afonso",
-  "Fado na Beira Baixa",
-  "Danças da comunidade cigana",
-  "Encontra entrevista a construtor de instrumentos tradicionais",
-  "Tuna universitária música tradicional portuguesa",
-  "Músicas e danças da Ilha de São Miguel",
-  "Vídeos sobre o 25 de abril",
-  "Mostra-me o projeto mais antigo da base de dados",
-  "Encontra vídeos gravados no Festival Bons Sons",
+  '\"Mostra-me um rapper de Trás-os-Montes\"',
+  '\"Voz como instrumento principal\"',
+  '\"Música feita com sintetizadores\"',
+  '\"Criação de som com ferramentas\"',
+  '\"Encontra poetas populares a falar sobre a morte\"',
+  '\"Viola braguesa no norte de Portugal\"',
+  '\"Música tocada com adufe em Lisboa\"',
+  '\"Instrumento adufe na Beira Baixa\"',
+  '\"Grupo infantil a cantar cante alentejano\"',
+  '\"Receitas tradicionais de Trás-os-Montes\"',
+  '\"Encontra um poeta do Baixo Alentejo\"',
+  '\"Religião na Beira Litoral\"',
+  '\"Grupo feminino a cantar uma música de trabalho com polifonia\"',
+  '\"Cover instrumental de música do Zeca Afonso\"',
+  '\"Fado na Beira Baixa\"',
+  '\"Danças da comunidade cigana\"',
+  '\"Encontra entrevista a construtor de instrumentos tradicionais\"',
+  '\"Tuna universitária música tradicional portuguesa\"',
+  '\"Músicas e danças da Ilha de São Miguel\"',
+  '\"Vídeos sobre o 25 de abril\"',
+  '\"Mostra-me o projeto mais antigo da base de dados\"',
+  '\"Encontra vídeos gravados no Festival Bons Sons\"',
 ];
 
 const projectPlaceholders = [
-  "Do mesmo autor",
-  "Projeto de categoria similar",
-  "Vídeos parecidos com este",
-  "Mais vídeos como este",
-  "Mesmo local de gravação",
-  "Num sítio diferente",
-  "Outros projetos gravados no mesmo ano",
-  "Outros vídeos com os mesmos instrumentos",
-  "Vídeos com instrumentos parecidos",
-  "Projetos com temas distintos",
+  '\"Do mesmo autor\"',
+  '\"Projeto de categoria semelhante\"',
+  '\"Vídeos parecidos com este\"',
+  '\"Mais vídeos como este\"',
+  '\"Mesmo local de gravação\"',
+  '\"Num sítio diferente\"',
+  '\"Outros projetos gravados no mesmo ano\"',
+  '\"Outros vídeos com os mesmos instrumentos\"',
+  '\"Vídeos com instrumentos parecidos\"',
+  '\"Projetos com temas distintos\"',
 ];
 
 const getRandomPlaceholder = (
@@ -103,7 +103,6 @@ const PromptBar = () => {
     }
   }, [isProjectPage, activeArray]);
 
-  // Rotate placeholders every 5 seconds with fade animation
   useEffect(() => {
     const interval = setInterval(() => {
       setIsFading(true);
@@ -111,7 +110,7 @@ const PromptBar = () => {
         setPlaceholderIndex((prev) => getRandomPlaceholder(placeholders, prev));
         setIsFading(false);
       }, 300);
-    }, 5000);
+    }, 7000);
 
     return () => clearInterval(interval);
   }, [placeholders]);
@@ -250,7 +249,7 @@ const PromptBar = () => {
           <button
             onClick={handleNewChat}
             disabled={isLoading}
-            className="text-white cursor-pointer flex items-center justify-center w-12 h-12 rounded-full bg-color-2/8 group disabled:cursor-not-allowed"
+            className="text-white cursor-pointer flex items-center justify-center w-12 h-12 rounded-full bg-color-2/8 group disabled:cursor-not-allowed flex-shrink-0"
           >
             <AiOutlinePlus className="h-6 w-6 opacity-50 group-hover:opacity-100 group-disabled:opacity-40 group-disabled:hover:opacity-40 transition-opacity duration-300" />
           </button>

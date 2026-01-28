@@ -121,7 +121,7 @@ export default function ProjectHome({
           <div className="flex gap-4 flex-wrap justify-center text-body-1">
             <button
               onClick={() => navigate(`/projetos/${videoId}`)}
-              className="px-5 py-3 bg-color-1 text-color-bg font-bold rounded-lg hover:bg-color-1/80 transition"
+              className="px-5 py-3 bg-color-1 text-color-bg font-bold rounded-lg hover:bg-color-1/80 transition cursor-pointer"
             >
               Ver {projectTitle}
             </button>
@@ -131,7 +131,7 @@ export default function ProjectHome({
                 clearMessages();
                 navigate("/explorar");
               }}
-              className="px-5 py-3 rounded-lg border border-color-2/40 text-color-2 hover:text-color-1 hover:border-color-1 bg-color-bg/20 hover:bg-color-bg/50 backdrop-blur-sm transition"
+              className="px-5 py-3 rounded-lg border border-color-2/40 text-color-2 hover:text-color-1 hover:border-color-1 bg-color-bg/20 hover:bg-color-bg/50 backdrop-blur-sm transition  cursor-pointer"
             >
               Nova Exploração
             </button>
