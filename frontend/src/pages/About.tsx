@@ -160,18 +160,56 @@ const About: React.FC = () => {
             </div>
             <div className="flex flex-col gap-3 pr-8">
               <p>
-                A Música Portuguesa a Gostar Dela Própria é uma associação
-                cultural que se dedica a documentar, valorizar e divulgar
-                processos e práticas musicais e ainda manifestações de cultura
-                popular. A sua missão passa por criar um espólio de tradição
-                oral e memória colectiva de Portugal no século XXI.
+                A música Portuguesa a gostar dela própria é fundada em 2011, por
+                Tiago Pereira e Joana Barra Vaz, com o intuito de fazer
+                convergir no mesmo lugar a diversidade da música portuguesa,
+                gravando vídeos de músicos em lugares não convencionais por todo
+                o país. Em Março do mesmo ano é fundada a Associação Cultural
+                com o mesmo nome. O projecto tem estado sempre em transformação,
+                contando com dezenas de colaboradores ao longo dos tempos.
               </p>
               <p>
-                Neste processo, um dos seus objetivos principais consiste na
-                dignificação e enaltecimento da sabedoria dos mais velhos, tal
-                como as práticas ainda mantidas pelos mais novos e outras novas
-                que contribuam para a diversificação da cultura portuguesa.
+                O seu principal objectivo é o registo de práticas musicais,
+                tradição oral e memória colectiva da cultura popular portuguesa,
+                acompanhando as transformações de uma cultura sempre em
+                constante movimento e mudança, não apenas como espectador mas de
+                uma forma mais interventiva, através da produção de
+                Documentários para televisão, programas de rádio, programação
+                cultural e intervenção criativa em diversos territórios,
+                mapeando práticas, fomentando oficinas de instrumentos
+                tradicionais e criando pontes entre gerações, com uma
+                participação activa em escolas e com jovens. A partir de 2020, a
+                associação muda-se para Serpins, Lousã onde cria um espaço
+                aberto ao público: “Cura” onde programa Oficinas e espectáculos,
+                promove a diversidade e cria um coro para que as canções que vai
+                gravando pelo país se mantenham vivas nas diversas actuações que
+                o coro vai fazendo.
               </p>
+              <p>
+                Em 2023 estende as suas actividades a Penamacor com o projecto
+                “Cura na Raia”, mais focado nas tradições musicais da Beira e no
+                Adufe, promovem-se oficinas de construção deste instrumento para
+                adultos e crianças e estimula-se a aprendizagem do repertório de
+                canções locais, transformando-as com oficinas de escritas de
+                canções para melodias já existentes, em estreita colaboração com
+                o Agrupamento de Escolas Ribeiro Sanches.
+              </p>
+              <p>
+                Em 2026 o projecto cria um projecto cultural em colaboração com
+                a Junta de freguesia de Benfica para a criação de um cancioneiro
+                da diversidade musical de Benfica, criando diversos coros e
+                oficinas a partir do registo em contínuo da música diversa e
+                multi cultural que se vai encontrando na Freguesia.
+              </p>
+              <p>
+                Desde 2023 que o projecto colabora com investigadores académicos
+                de diversas universidades Ibéricas, para desenvolver modelos de
+                interação entre Inteligência Artificial e música Tradicional e é
+                ainda parceiro audiovisual do Arquivo Digital do Cante, para
+                além de projectos pontuais com outras associações e
+                instituições.
+              </p>
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-0 mt-8">
                 <a
                   className="cursor-pointer text-color-2 hover:text-color-1 transition-all duration-250 underline"
