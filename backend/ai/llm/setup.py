@@ -58,8 +58,8 @@ def queryLLM(currentPrompt, previousQueries):
             f"<PROMPT>{currentPrompt}</PROMPT>"
         )
 
-    print(f"DEBUG ACTION: {action}")
-    print(f"DEBUG PROMPT INJECTED:\n{formattedPrompt}")
+    # print(f"DEBUG ACTION: {action}")
+    # print(f"DEBUG PROMPT INJECTED:\n{formattedPrompt}")
 
     try:
         response = requests.post(

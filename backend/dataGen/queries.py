@@ -35,7 +35,7 @@ def detectContextualIntent(prompt):
 
         if response.status_code == 200:
             output = response.json().get('response', '').strip().lower()
-            print(f"DEBUG: Router model output: '{output}'")
+            #print(f"DEBUG: Router model output: '{output}'")
 
             # Parse output format: "field-operator"
             if '-' in output:
@@ -51,10 +51,10 @@ def detectContextualIntent(prompt):
                     elif field == 'none' and operator == 'none':
                         return (None, None)
 
-            print(f"DEBUG: Router model output invalid format: '{output}'")
+            #print(f"DEBUG: Router model output invalid format: '{output}'")
             return (None, None)
     except Exception as e:
-        print(f"DEBUG: Router model error: {e}")
+        #print(f"DEBUG: Router model error: {e}")
         return (None, None)
 
     return (None, None)
@@ -190,7 +190,7 @@ def stripQueries(text):
 # ==================================================
 
 def handleQuery(data):
-    print(data)
+    #print(data)
 
     currentPrompt = data["currentPrompt"]
     currentProjectId = data.get("currentProjectId")
@@ -209,7 +209,7 @@ def handleQuery(data):
         project = Project.query.get(currentProjectId)
 
         if project:
-            print(f"DEBUG: Contextual intent '{contextType}-{contextOperator}' detected! Building query directly.")
+            #print(f"DEBUG: Contextual intent '{contextType}-{contextOperator}' detected! Building query directly.")
 
             contextProject = {
                 "title": project.title,
@@ -232,7 +232,7 @@ def handleQuery(data):
 
             # Apply fallback system if no results
             if not has_results:
-                print("DEBUG: No contextual results found - applying fallback system")
+                #print("DEBUG: No contextual results found - applying fallback system")
                 fallback_result = applyFallback(result["queries"])
 
                 # Update result with fallback data
@@ -257,9 +257,9 @@ def handleQuery(data):
             return result
 
     # Default path: Use LLM for normal queries
-    print("DEBUG: Using LLM for query generation")
+    #print("DEBUG: Using LLM for query generation")
     modelOutput = queryLLM(currentPrompt, data["previousQueries"])
-    print(modelOutput)
+    #print(modelOutput)
 
     interactionId = recordInteraction(data,modelOutput)
 
@@ -271,7 +271,7 @@ def handleQuery(data):
 
     # Apply fallback system if no results
     if not has_results:
-        print("DEBUG: No results found - applying fallback system")
+        #print("DEBUG: No results found - applying fallback system")
         fallback_result = applyFallback(result["queries"])
 
         # Update result with fallback data
@@ -292,11 +292,11 @@ def handleQuery(data):
         main_terms = extracted['terms']
         date_filter = extracted['dateTerm']
 
-        print(f"DEBUG: Total projects: {total_projects}, Main terms count: {len(main_terms)}")
+        #print(f"DEBUG: Total projects: {total_projects}, Main terms count: {len(main_terms)}")
 
         # If 2 or fewer main terms and less than 10 total projects, add keyword search
         if len(main_terms) <= 2 and len(main_terms) > 0 and total_projects < 10:
-            print(f"DEBUG: Checking keyword expansion group for terms: {main_terms}")
+            #print(f"DEBUG: Checking keyword expansion group for terms: {main_terms}")
 
             # Build keyword search with OR joining all terms
             keyword_query_info = buildMultiTermFallback(main_terms, date_filter)
@@ -308,13 +308,13 @@ def handleQuery(data):
                 existingGroups = [{'results': r} for r in rawResults]
                 isDuplicate = hasDuplicateProjects(keyword_results, existingGroups)
 
-                if isDuplicate:
-                    print(f"DEBUG: Skipping keyword expansion - duplicate projects ({len(keyword_results)} projects)")
-                else:
-                    print(f"DEBUG: Adding keyword expansion with {len(keyword_results)} additional projects")
-                    result["queries"].append(keyword_query_info['query'])
-                    result["descriptions"].append(keyword_query_info['description'])
-                    rawResults.append(keyword_results)
+                # if isDuplicate:
+                #     print(f"DEBUG: Skipping keyword expansion - duplicate projects ({len(keyword_results)} projects)")
+                # else:
+                #     print(f"DEBUG: Adding keyword expansion with {len(keyword_results)} additional projects")
+                result["queries"].append(keyword_query_info['query'])
+                result["descriptions"].append(keyword_query_info['description'])
+                rawResults.append(keyword_results)
 
     # Shuffle results before serialization
     for queryResult in rawResults:
