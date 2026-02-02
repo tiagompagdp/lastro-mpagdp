@@ -62,7 +62,7 @@ def fetch_csv():
 @app.route('/user-activity', methods=['GET'])
 @limiter.limit("20 per minute")
 def get_user_activity():
-    data = [interaction.serialize() for interaction in Interaction.query.all()]
+    data = [interaction.serialize() for interaction in Interaction.query.order_by(Interaction.id.desc()).all()]
     json_str = json.dumps(data, ensure_ascii=False, indent=2)
     return Response(json_str, mimetype='application/json; charset=utf-8')
 
