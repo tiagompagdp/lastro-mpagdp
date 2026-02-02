@@ -20,7 +20,7 @@ const generalPlaceholders = [
   '\"Música tocada com adufe em Lisboa\"',
   '\"Instrumento adufe na Beira Baixa\"',
   '\"Grupo infantil a cantar cante alentejano\"',
-  '\"Receitas tradicionais de Trás-os-Montes\"',
+  '\"Procura receitas tradicionais de Trás-os-Montes\"',
   '\"Encontra um poeta do Baixo Alentejo\"',
   '\"Religião na Beira Litoral\"',
   '\"Grupo feminino a cantar uma música de trabalho com polifonia\"',
@@ -33,6 +33,7 @@ const generalPlaceholders = [
   '\"Vídeos sobre o 25 de abril\"',
   '\"Mostra-me o projeto mais antigo da base de dados\"',
   '\"Encontra vídeos gravados no Festival Bons Sons\"',
+  '\"Projetos sem título\"',
 ];
 
 const projectPlaceholders = [

@@ -19,39 +19,47 @@ Labels:
 - date-different
 - none-none
 
-Examples:
+Guidelines:
+- Return a `-equal` or `-different` ONLY if the user explicitly uses comparison words: "mesmo", "diferente", "parecido", "outro", "como".
+- NEVER return `-different` or `-equal` for a bare name, location, or search term alone. Those are always `none-none`.
+- Output exactly ONE label and nothing else.
+
+Examples (COMPARISON - returns -equal or -different):
 "mesmo autor" -> author-equal
 "autor diferente" -> author-different
 "outro autor" -> author-different
+"mais deste autor" -> author-equal
+"mais deste criador" -> author-equal
 "mesma categoria" -> category-equal
+"categoria diferente" -> category-different
 "vídeos parecidos" -> category-equal
 "mais como este" -> category-equal
-"categoria diferente" -> category-different
+"mais projetos como este" -> category-equal
 "mesmo local" -> location-equal
 "local diferente" -> location-different
-"no mesmo lugar" -> location-equal
-"em outro sítio" -> location-different
-"sítio parecido" -> location-equal
+"noutro sítio" -> location-different
+"neste sítio" -> location-equal
 "mesma data" -> date-equal
-"mesmo ano" -> date-equal
+"outros projetos neste ano" -> date-equal
 "data diferente" -> date-different
 "com os mesmos instrumentos" -> instruments-equal
-"instrumentos parecidos" -> instruments-equal
 "instrumentos diferentes" -> instruments-different
+"mais do mesmo tipo" -> category-equal
+"de tipo diferente" -> category-different
 
-"maria" -> none-none
-"bia maria" -> none-none
+Examples (BARE NAMES/TERMS - returns none-none):
+"Maria" -> none-none
+"Filipe Sambado" -> none-none
 "carlos" -> none-none
 "fado" -> none-none
 "lisboa" -> none-none
 "2023" -> none-none
 "guitarra" -> none-none
+"vídeos com viola" -> none-none
 "mar" -> none-none
 "flores e mar" -> none-none
 "projetos em Viana do Castelo" -> none-none
 "vídeos que falam de maçã" -> none-none
 "videos sobre dança" -> none-none
 "dança no alentejo" -> none-none
-
-Default: none-none
 """

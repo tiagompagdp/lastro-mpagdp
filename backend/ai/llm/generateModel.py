@@ -32,14 +32,16 @@ name: projects
 structure: {COLUMN_DESCRIPTIONS}
 
 RULES:
-1. Always use LIKE '%value%' for text fields (never use =)
-2. Date filtering:
-   - Specific year: date LIKE '%2023%'
-   - Before date: date < 'YYYY-MM-DD'
-   - After date: date > 'YYYY-MM-DD'
-3. Absolute sorting queries:
-   - "o mais recente/último" -> ORDER BY date DESC LIMIT 1
-   - "o mais antigo/primeiro" -> ORDER BY date ASC LIMIT 1
+1. Always use LIKE '%value%' for text fields (never use =).
+2. When building WHERE clauses that mix OR and AND, group OR conditions with parentheses so AND applies to the whole OR group. Example: `(title LIKE ... OR category LIKE ...) AND location LIKE ...`.
+3. For author names: preserve exact input.
+4. Date filtering:
+       - Specific year: date LIKE '%2026%'
+       - Before date: date < 'YYYY-MM-DD'
+       - After date: date > 'YYYY-MM-DD'
+4. Absolute sorting queries:
+       - "o mais recente/último" -> ORDER BY date DESC LIMIT 1
+       - "o mais antigo/primeiro" -> ORDER BY date ASC LIMIT 1
 
 ACTIONS:
 <ACTION>RESET</ACTION> = Build fresh query from <PROMPT> only
@@ -48,8 +50,8 @@ ACTIONS:
 EXAMPLES:
 RESET: <PROMPT>="carlos" -> WHERE author LIKE '%carlos%'
        DESC: Trabalhos de Carlos
-RESET: <PROMPT>="Jorge Cruz" -> WHERE author LIKE '%Jorge Cruz%'
-       DESC: Projetos de Jorge Cruz
+RESET: <PROMPT>="herman josé" -> WHERE author LIKE '%herman josé%'
+       DESC: Projetos de Herman José
 RESET: <PROMPT>="na praia" -> WHERE location LIKE '%praia%'
        DESC: Gravado na praia
 RESET: <PROMPT>="fado" -> WHERE title LIKE '%fado%' OR category LIKE '%fado%'
@@ -66,8 +68,14 @@ RESET: <PROMPT>="guitarra de fado" -> WHERE instruments LIKE '%guitarra%' or ins
        DESC: Guitarra ou fado nos instrumentos
 RESET: <PROMPT>="dança antes de 2024" -> WHERE category LIKE '%dança%' AND date < '2024-01-01'
        DESC: Dança publicada antes de 2024
-RESET: <PROMPT>="em 2023" -> WHERE date LIKE '%2023%'
-       DESC: Publicado em 2023
+RESET: <PROMPT>="Músicas e danças da Ilha de São Miguel" -> WHERE (category LIKE '%Música%' OR category LIKE '%Dança%') AND location LIKE '%Ilha de São Miguel%'
+       DESC: Músicas ou danças na Ilha de São Miguel
+RESET: <PROMPT>="Receitas tradicionais" -> WHERE (category LIKE '%Gastronomia%' OR category LIKE '%Comida%') AND category LIKE '%Tradicional%'
+       DESC: Receitas tradicionais (gastronomia/comida)
+RESET: <PROMPT>="Projetos que falam sobre Fado na região da Beira Baixa" -> WHERE (title LIKE '%Fado%' OR category LIKE '%Fado%') AND location LIKE '%Beira Baixa%'
+       DESC: Fado na Beira Baixa
+RESET: <PROMPT>="em 2026" -> WHERE date LIKE '%2026%'
+       DESC: Publicado em 2026
 RESET: <PROMPT>="vídeo mais recente de filipe sambado" -> WHERE author LIKE '%filipe sambado%' ORDER BY date DESC LIMIT 1
        DESC: O mais recente de Filipe Sambado
 MERGE: <PREV_SQL>="WHERE author LIKE '%carlos%'" + <PROMPT>="em Lisboa" → WHERE author LIKE '%carlos%' AND location LIKE '%Lisboa%'
