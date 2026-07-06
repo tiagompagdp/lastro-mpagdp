@@ -2,6 +2,7 @@ import { useContentReady } from "../composables/usePageTransition";
 import logoSvg from "../assets/logo.svg";
 import lastroImg from "../assets/images/lastro.jpeg";
 import curaImg from "../assets/images/cura.jpg";
+import logo_rp from "../assets/logo_rp.png";
 
 const About: React.FC = () => {
   useContentReady(true);
@@ -66,14 +67,12 @@ const About: React.FC = () => {
             </div>
             <div className="mt-16">
               <a
-                href="https://amusicaportuguesaagostardelapropria.org/"
-                target="_blank"
-              >
-                <img
-                  src={logoSvg}
-                  alt="Loading"
-                  className={`relative z-10 w-10 h-10 mb-4`}
-                />
+              className="flex items-center gap-3 pb-4 "
+              href="https://amusicaportuguesaagostardelapropria.org/"
+              target="_blank"
+                >
+              <img src={logoSvg} alt="Logo" className="w-10 h-10 object-contain" />
+              <img src={logo_rp} alt="Logo RP" className="w h-10 object-contain" />
               </a>
               <p className="text-body-2 text-color-2">
                 2026. Todos os direitos reservados.
