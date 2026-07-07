@@ -3,6 +3,7 @@ import logoSvg from "../assets/logo.svg";
 import lastroImg from "../assets/images/lastro.jpeg";
 import curaImg from "../assets/images/cura.jpg";
 import logo_rp from "../assets/logo_rp.png";
+import logo_uc from "../assets/logo_uc.png";
 
 const About: React.FC = () => {
   useContentReady(true);
@@ -65,15 +66,25 @@ const About: React.FC = () => {
                 Mais
               </a>
             </div>
-            <div className="mt-16">
-              <a
+            <div className="mt-16 flex flex-col gap-2 md:gap-0">
+               <a
               className="flex items-center gap-3 pb-4 "
               href="https://amusicaportuguesaagostardelapropria.org/"
               target="_blank"
                 >
-              <img src={logoSvg} alt="Logo" className="w-10 h-10 object-contain" />
-              <img src={logo_rp} alt="Logo RP" className="w h-10 object-contain" />
+              <img src={logoSvg} alt="Logo" className="w-10 h-10 mb-4" />
               </a>
+              <p className="text-body-2 text-color-2">Financiado por</p>
+              <div className="flex items-center gap-3 pb-4">
+                
+              
+              <img src={logo_uc} alt="Logo" className="w-10 h-10 object-contain" />
+              <img src={logo_rp} alt="Logo" className="w-10 h-10 object-contain" />
+              
+
+                
+                </div>
+             
               <p className="text-body-2 text-color-2">
                 2026. Todos os direitos reservados.
               </p>
