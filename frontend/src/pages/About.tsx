@@ -4,6 +4,7 @@ import lastroImg from "../assets/images/lastro.jpeg";
 import curaImg from "../assets/images/cura.jpg";
 import logo_rp from "../assets/logo_rp.png";
 import logo_uc from "../assets/logo_uc.png";
+import logo_inatel from "../assets/logo_inatel.png";
 
 const About: React.FC = () => {
   useContentReady(true);
@@ -80,6 +81,7 @@ const About: React.FC = () => {
               
               <img src={logo_uc} alt="Logo" className="w-10 h-10 object-contain" />
               <img src={logo_rp} alt="Logo" className="w-10 h-10 object-contain" />
+              <img src={logo_inatel} alt="Logo" className="w-10 h-10 object-contain" />
               
 
                 
